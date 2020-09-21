@@ -1,0 +1,148 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.github.rexsheng</groupId>
+	<artifactId>mybatis-extension</artifactId>
+	<version>1.0.0</version>
+	<packaging>jar</packaging>
+
+	<name>mybatis-extension</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>3.5.4</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis.generator</groupId>
+			<artifactId>mybatis-generator-core</artifactId>
+			<version>1.4.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.44</version><!--$NO-MVN-MAN-VER$ -->
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.30</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+			</plugin>
+			<plugin>
+		   <groupId>com.github.wvengen</groupId>
+		   <artifactId>proguard-maven-plugin</artifactId>
+		   <version>2.1.0</version>
+		   <executions>
+		      <execution>
+		         <!-- 混淆时刻，这里是打包的时候混淆-->
+		         <phase>package</phase>
+		         <goals>
+		            <!-- 使用插件的什么功能，当然是混淆-->
+		            <goal>proguard</goal>
+		         </goals>
+		      </execution>
+		   </executions>
+		   <configuration>
+		      <!-- 是否将生成的PG文件安装部署-->
+		      <attach>false</attach>
+		      <!-- 是否混淆-->
+		      <obfuscate>true</obfuscate>
+		      <!-- 指定生成文件分类 -->
+		      <attachArtifactClassifier>pg</attachArtifactClassifier>
+		      <options>
+		         <!-- JDK目标版本1.8-->
+		         <option>-target 1.8</option>
+		         <!-- 不做收缩（删除注释、未被引用代码）-->
+		         <option>-dontshrink</option>
+		         <!-- 不做优化（变更代码实现逻辑）-->
+		         <!-- <option>-dontoptimize</option> -->
+		         <!-- 不路过非公用类文件及成员-->
+		         <option>-dontskipnonpubliclibraryclasses</option>
+		         <option>-dontskipnonpubliclibraryclassmembers</option>
+		         <!--不用大小写混合类名机制-->
+		         <option>-dontusemixedcaseclassnames</option>
+		 
+		         <!-- 优化时允许访问并修改有修饰符的类和类的成员 -->
+		         <option>-allowaccessmodification</option>
+		         <!-- 确定统一的混淆类的成员名称来增加混淆-->
+		         <option>-useuniqueclassmembernames</option>
+		         <!-- 不混淆所有包名-->
+		         <option>-keeppackagenames</option>
+		         <!-- 保持目录结构，否则autowired无法使用-->
+		 		 <option>-keepdirectories</option>
+		         <!-- 需要保持的属性：异常，注解等-->
+		         <option>-keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LocalVariable*Table,*Annotation*,Synthetic,EnclosingMethod</option>
+		         <!-- 不混淆所有的set/get方法 -->
+				<option>-keepclassmembers public class * {void set*(***);*** get*();}</option>
+				
+				<option>-keepclassmembernames class com.github.rexsheng.mybatis.provider.DynamicSqlProvider {public *** *(**);}</option>
+		 		<option>-keepclassmembers class **{*** intercept(***);}</option>
+ 		          <!--不混淆包下的所有类名，且类中的方法也不混淆  -->
+		         <!-- <option>-keep class com.github.rexsheng.mybatis.*.**{*;}</option> -->
+		         <option>-keep class com.github.rexsheng.mybatis.interceptor.ResultTypeInterceptor{*;}</option>
+		         <option>-keep class com.github.rexsheng.mybatis.core.SFunction{*;}</option>
+		         <option>-keep class com.github.rexsheng.mybatis.mapper.**{*;}</option>
+		         <option>-keep class com.github.rexsheng.mybatis.extension.**{*;}</option>
+		         <option>-keep class com.github.rexsheng.mybatis.annotation.**{*;}</option>
+		         <option>-keep class com.github.rexsheng.mybatis.plugin.**{*;}</option>
+		         <option>-keep class com.github.rexsheng.mybatis.config.**{*;}</option>
+<!-- 		         <option>-keep class com.github.rexsheng.mybatis.provider.**{*;}</option> -->
+<!-- 		         <option>-keep class com.github.rexsheng.*.converter.**{*;}</option> -->
+<!-- 		         <option>-keep class com.github.rexsheng.mybatis.core.**{*;}</option> -->
+<!-- 		         <option>-keep class com.github.rexsheng.mybatis.common.**</option> -->
+		 
+		      </options>
+		      <!--class 混淆后输出的jar包-->
+		      <outjar>${project.name}-${project.version}.jar</outjar>
+		      <!-- 添加依赖，这里你可以按你的需要修改，这里测试只需要一个JRE的Runtime包就行了 -->
+		      <libs>
+		         <lib>${java.home}/lib/rt.jar</lib>
+		         <lib>${java.home}/lib/jce.jar</lib>
+		      </libs>
+		      <!-- 对什么东西进行加载，这里仅有classes成功，毕竟你也不可能对配置文件及JSP混淆吧-->
+		      <injar>classes</injar>
+		      <!-- 输出目录-->
+		      <outputDirectory>${project.build.directory}</outputDirectory>
+		   </configuration>
+		</plugin>
+		</plugins>
+		<resources>
+			<resource>
+				<directory>.</directory>
+				<includes>
+					<include>readme.txt</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
+	</build>
+</project>
