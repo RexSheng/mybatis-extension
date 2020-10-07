@@ -38,21 +38,20 @@ public class PagedListInterceptor implements Interceptor{
 		}
 		final Object[] args = invocation.getArgs();
 		MappedStatement ms = (MappedStatement)ReflectUtil.getFieldValue(resultSetHandler, "mappedStatement");
-
 		//通过java反射获得mappedStatement属性值
 //		MappedStatement ms = (MappedStatement) args[0];
 		if(ms==null) {
 			return invocation.proceed();
 		}
 		String methodName=ms.getId();
-		logger.info("methodName:{}",methodName);
+		logger.debug("methodName:{}",methodName);
 		//String sql=boundSql.getSql();
 		//List<ResultMap> rms = ms.getResultMaps();
 		//ResultMap rm = rms != null && rms.size() > 0 ? rms.get(0) : null;
 		//String type = rm != null && rm.getType() != null ? rm.getType().getName() : "";  
 		//Object[] args = invocation.getArgs();
         // 获取到当前的Statement
-		if(methodName.endsWith(".selectByPage")) {
+		if(methodName.endsWith(".selectByPageBuilder")) {
 			return invocation.proceed();
 		}
 		else {

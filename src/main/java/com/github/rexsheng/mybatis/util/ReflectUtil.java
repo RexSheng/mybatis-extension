@@ -114,9 +114,8 @@ public class ReflectUtil {
 
     /**
      * 根据文件路径 获取反射对象并执行对应方法
-     *
-     * @author RexSheng
-     * @date 2018/4/17 上午9:51
+     * @param path 路径
+     * @return 反射对象
      */
     public static Object reflectByPath(String path) {
         try {

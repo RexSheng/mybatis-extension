@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import com.github.rexsheng.mybatis.core.IPageInput;
 import com.github.rexsheng.mybatis.core.SFunction;
 import com.github.rexsheng.mybatis.util.ReflectUtil;
 import com.github.rexsheng.mybatis.util.StringUtils;
@@ -31,8 +32,14 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	
 	private Integer skipSize;
 	
-	private Integer takeSize;
+	private Integer pageIndex;
 	
+	private Integer pageSize;
+	
+	private long totalItemCount;
+	
+	private Boolean calculateTotalCount;
+		
 	public static <T> TableQueryBuilder<T> from(Class<T> clazz){
 		return new TableQueryBuilder<T>(clazz);
 	}
@@ -53,6 +60,8 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 		this.groupByColumns=new ArrayList<>();
 		this.havingConditions=new ArrayList<>();
 		this.orderByColumns=new ArrayList<>();
+		this.totalItemCount=0L;
+		this.calculateTotalCount=false;
 	}
 
 	
@@ -210,7 +219,7 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	 * 自定义聚合函数操作
 	 * @param aggregationType 聚合类型，例如SUM,AVG,COUNT等
 	 * @param field 条件构造器
-	 * @return
+	 * @return 当前条件
 	 */
 	public TableQueryBuilder<T> having(String aggregationType,Consumer<ConditionBuilder<T>> field) {
 		ConditionBuilder<T> condition=new ConditionBuilder<>(super.getEntityClass());
@@ -411,14 +420,20 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 		return this;
 	}
 	
-	public TableQueryBuilder<T> page(int pageIndex,int pageSize) {
-		this.skipSize=(pageIndex-1)*pageSize;
-		this.takeSize=pageSize;
+	public TableQueryBuilder<T> page(IPageInput page) {
+		this.pageIndex=page.getPageIndex();
+		this.pageSize=page.getPageSize();
 		return this;
 	}
 	
-	public TableQueryBuilder<T> take(int dataSize) {
-		this.takeSize=dataSize;
+	public TableQueryBuilder<T> page(int pageIndex,int pageSize) {
+		this.pageIndex=pageIndex;
+		this.pageSize=pageSize;
+		return this;
+	}
+	
+	public TableQueryBuilder<T> take(int pageSize) {
+		this.pageSize=pageSize;
 		return this;
 	}
 	
@@ -458,15 +473,67 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	}
 
 	public Integer getSkipSize() {
-		return skipSize;
+		if(skipSize!=null) {
+			return skipSize;
+		}
+		else if(pageIndex!=null && pageIndex>0 && pageSize!=null) {
+			return (pageIndex-1)*pageSize;
+		}
+		else {
+			return null;
+		}
 	}
 
-	public Integer getTakeSize() {
-		return takeSize;
+	public Integer getPageSize() {
+		return pageSize;
+	}
+	
+	public Integer getPageIndex() {
+		return pageIndex;
 	}
 	
 	public List<ColumnQueryBuilder<T>> getOrderByColumns() {
 		return orderByColumns;
+	}
+
+	public long getTotalItemCount() {
+		return totalItemCount;
+	}
+
+	public void setTotalItemCount(long totalItemCount) {
+		this.totalItemCount = totalItemCount;
+	}
+
+	/**
+	 * 是否在执行列表查询中同时计算总条数
+	 * @see TableQueryBuilder#totalCountEnabled()
+	 * @return true是，false否
+	 */
+	public Boolean getTotalCountEnabled() {
+		return calculateTotalCount;
+	}
+
+	/**
+	 * 允许在查询过程中同时计算影响的总行数
+	 * 用于分页计算总条数，执行查询后调用方法{@link TableQueryBuilder#getTotalItemCount()}来获取总条数
+	 * <p>
+	 * 代码示例：
+	 * <pre>
+	 * int pageIndex=1; //要查询的页码
+	 * int pageSize=10; //页大小
+	 * TableQueryBuilder&lt;AuthUser&gt; query=TableQueryBuilder.from(AuthUser.class);
+	 * query.selectAll().page(pageIndex, pageSize)
+	 * .totalCountEnabled() //注意必须调用此方法，否则下方query.getTotalItemCount()无法获取总条数
+	 * .where().gt(AuthUser::getUserId, 0);
+	 * List&lt;AuthUser&gt; userList=dao.selectByBuilder(query.build());
+	 * PagedList&lt;AuthUser&gt; pagedList=new PagedList&lt;&gt;(userList,pageIndex,pageSize,query.getTotalItemCount());
+	 * logger.info(objectMapper.writeValueAsString(pagedList));
+	 * </pre>
+	 * @return 当前条件
+	 */
+	public TableQueryBuilder<T> totalCountEnabled() {
+		this.calculateTotalCount = true;
+		return this;
 	}
 
 	public static class JoinTableConditionInternal<L,R>{

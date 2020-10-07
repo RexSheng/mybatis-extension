@@ -9,19 +9,31 @@ mybatis扩展库，纯mybatis原生支持，可用于辅助mybatis-plus、tk-myb
 * 无其他依赖包及要求
 
 #### features
-1. 支持多表自定义join关联查询<font size="1">（since1.0.0）</font>
-2. 支持自定义AND/OR混合条件<font size="1">（since1.0.0）</font>
-3. 支持GROUPBY/HAVING聚合查询<font size="1">（since1.0.0）</font>
-4. 支持自定义sql查询<font size="1">（since1.0.0）</font>
-5. 内置多种mybatis generator常用插件，例如批量新增、分页等<font size="1">（since1.0.0）</font>
+1. 支持多表自定义join关联查询
+2. 支持自定义AND/OR混合条件
+3. 支持GROUPBY/HAVING聚合查询
+4. 支持自定义sql查询
+5. 内置多种mybatis generator常用插件，例如批量新增、分页等
+6. 支持批量插入<font size="1">（since1.0.1）</font>
 
 #### 使用说明（springboot示例)
-- 1. 配置mybatis的mapper依赖包：在启动类或者配置类上加入注解
+- 1. pom.xml中添加maven依赖包
+
+``` java
+<!-- https://mvnrepository.com/artifact/com.github.rexsheng/mybatis-extension -->
+<dependency>
+    <groupId>com.github.rexsheng</groupId>
+    <artifactId>mybatis-extension</artifactId>
+    <version>1.1.1</version>
+</dependency>
+
+```
+- 2. 配置mybatis的mapper依赖包：在启动类或者配置类上加入注解
 
 ``` java
 @MapperScan(basePackages = {"com.github.rexsheng.mybatis.mapper"})
 ```
-- 2. 配置mybatis拦截器
+- 3. 配置mybatis拦截器
 
 ```
 import com.github.rexsheng.mybatis.interceptor.ResultTypeInterceptor;
@@ -34,7 +46,7 @@ public class InterceptorConfig {
 	}
 }
 ```
-- 3. 开始使用，可直接注入DynamicMapper使用
+- 4. 开始使用，可直接注入接口DynamicMapper使用
 
 ```
 
@@ -75,13 +87,27 @@ public class MapperTest {
 		//定义要查询主表的所有字段，并且使用主表左关联从表，指定关联条件
 		userQuery.selectAll().leftJoin(userRoleQuery).on(TUser::getUserId, UserRole::getUserId);
 		//定义where中的条件
-		userQuery.or().like(TUser::getFirstName, "%管理员%").like(TUser::getLastName, "%管理员%");
-		//执行查询，返回新的结构
+		userQuery.where().like(TUser::getFirstName, "%管理员%").like(TUser::getLastName, "%管理员%");
+		//执行查询，定义新的返回类
 		List<UserRoleQueryDto> userList=dao.selectByBuilder(userQuery.build(UserRoleQueryDto.class));
 		log.info("用户角色列表:{}",userList);
 	}
 }
 ```
+##### v<font size="3">1.1.1</font>  date: <font size="3">2020/10/08</font>
+1. 新增DynamicMapper接口sql传参方法selectBySqlWithParams，selectByMapWithParams。
+   sql里不必再手动拼接参数，写法与xml语法保持一致，支持参数直接传入list自动拆解
+2. 删除调试日志
+
+##### v<font size="3">1.1.0</font>  date: <font size="3">2020/10/05</font>
+1. TableQueryBuilder类新增设置分页方法setPage,新增开启计算总条数方法totalCountEnabled()
+2. 优化mbg分页插件，支持传入page参数，支持只设置pageSize，pageIndex改为非必须
+3. BuilderConfiguration新增dbType属性
+4. 修改批量插入方法不使用配置方法获取列名的问题
+5. 添加部分注释
+
+##### v<font size="3">1.0.1</font>  date: <font size="3">2020/09/28</font>
+1. 新增DynamicMapper接口批量插入方法batchInsert，支持全局配置，示例程序同步增加测试用例
 
 ##### v<font size="3">1.0.0</font>  date: <font size="3">2020/09/01</font>
 1. 第一版发布，提供springboot示例程序下载

@@ -3,11 +3,8 @@ package com.github.rexsheng.mybatis.extension;
 import java.lang.reflect.Field;
 import java.util.regex.Pattern;
 
-import com.github.rexsheng.mybatis.annotation.ColumnName;
 import com.github.rexsheng.mybatis.config.BuilderConfiguration;
-import com.github.rexsheng.mybatis.core.SqlReservedWords;
 import com.github.rexsheng.mybatis.util.ReflectUtil;
-import com.github.rexsheng.mybatis.util.StringUtils;
 
 /**
  * @author RexSheng 2020年8月27日 下午8:07:18
@@ -50,6 +47,17 @@ public class ColumnQueryBuilder<T> extends EntityInfo<T>{
 			this.supportAlias=true;
 			this.field=ReflectUtil.getClassField(clazz, fieldName);
 		}
+	}
+	
+	/**
+	 * 用于批量新增时
+	 * @param clazz 实体类型
+	 * @param field 字段类型
+	 */
+	public ColumnQueryBuilder(Class<T> clazz,Field field) {
+		super(clazz);
+		this.fieldName=field.getName();
+		this.field=field;
 	}
 	 
 
@@ -106,25 +114,7 @@ public class ColumnQueryBuilder<T> extends EntityInfo<T>{
 	
 	private String getActualColumnName(BuilderConfiguration configuration) {
 		if(inputColumnName==null) {
-			String col=null;
-			if(field!=null) {
-				ColumnName columnName=field.getAnnotation(ColumnName.class);
-				if(columnName!=null) {
-					col=columnName.value();
-				}
-				else {
-					col=StringUtils.camelCaseToUnderLine(getFieldName());
-				}
-			}
-			else {
-				col=StringUtils.camelCaseToUnderLine(getFieldName());
-			}
-			if(SqlReservedWords.containsWord(col)) {
-				return configuration.getBeginDelimiter()+col+configuration.getEndDelimiter();
-			}
-			else {
-				return col;
-			}
+			return configuration.getColumnNameHandler().apply(this);
 		}
 		else {
 			return inputColumnName;

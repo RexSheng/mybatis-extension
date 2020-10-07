@@ -46,9 +46,9 @@ public class JSONValue {
 	}
 	
 	/**
-	 * Escape quotes, \, /, \r, \n, \b, \f, \t and other control characters (U+0000 through U+001F).
-	 * @param s
-	 * @return
+	 * 
+	 * @param s 字符串
+	 * @return 字符串
 	 */
 	public static String escape(String s){
 		if(s==null)
@@ -59,8 +59,9 @@ public class JSONValue {
     }
 
     /**
-     * @param s - Must not be null.
-     * @param sb
+     * 
+     * @param s 字符串
+     * @param sb sb
      */
     static void escape(String s, StringBuffer sb) {
 		for(int i=0;i<s.length();i++){

@@ -33,8 +33,9 @@ public class PaginationPlugin extends PluginAdapter {
 	@Override
 	public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
 		// addfield, getter, setter for limit clause
-		addLimit(topLevelClass, introspectedTable, "limitStart");
-		addLimit(topLevelClass, introspectedTable, "limitEnd");
+		addLimit(topLevelClass, introspectedTable, "pageIndex");
+		addLimit(topLevelClass, introspectedTable, "pageSize");
+		addPage(topLevelClass, introspectedTable);
 		return super.modelExampleClassGenerated(topLevelClass, introspectedTable);
 	}
 	
@@ -52,24 +53,22 @@ public class PaginationPlugin extends PluginAdapter {
 	@Override
 	public boolean sqlMapSelectByExampleWithoutBLOBsElementGenerated(XmlElement element,
 			IntrospectedTable introspectedTable) {
-		// LIMIT5,10; // 检索记录行 6-15
-		XmlElement isNotNullElement = new XmlElement("if");//$NON-NLS-1$
-		isNotNullElement.addAttribute(new Attribute("test", "limitStart != null and limitStart >=0"));//$NON-NLS-1$ //$NON-NLS-2$
-		isNotNullElement.addElement(new TextElement("limit ${limitStart} , ${limitEnd}"));
-		element.addElement(isNotNullElement);
-		// LIMIT 5;//检索前 5个记录行
+		XmlElement pageElement = new XmlElement("if");//$NON-NLS-1$
+		pageElement.addAttribute(new Attribute("test", "pageSize != null and pageSize > 0"));//$NON-NLS-1$ //$NON-NLS-2$
+		pageElement.addElement(new TextElement("limit #{startIndex},#{pageSize}"));		
+		element.addElement(pageElement);
+		
 		return super.sqlMapUpdateByExampleWithoutBLOBsElementGenerated(element, introspectedTable);
 	}
 	
 	@Override
     public boolean sqlMapSelectByExampleWithBLOBsElementGenerated(
         XmlElement element, IntrospectedTable introspectedTable) {
-		// LIMIT5,10; // 检索记录行 6-15
-		XmlElement isNotNullElement = new XmlElement("if");//$NON-NLS-1$
-		isNotNullElement.addAttribute(new Attribute("test", "limitStart != null and limitStart >=0"));//$NON-NLS-1$ //$NON-NLS-2$
-		isNotNullElement.addElement(new TextElement("limit ${limitStart} , ${limitEnd}"));
-		element.addElement(isNotNullElement);
-		// LIMIT 5;//检索前 5个记录行
+		XmlElement pageElement = new XmlElement("if");//$NON-NLS-1$
+		pageElement.addAttribute(new Attribute("test", "pageSize != null and pageSize > 0"));//$NON-NLS-1$ //$NON-NLS-2$
+		pageElement.addElement(new TextElement("limit #{startIndex},#{pageSize}"));		
+		element.addElement(pageElement);
+		
 		return super.sqlMapSelectByExampleWithBLOBsElementGenerated(element, introspectedTable);
     }
 	
@@ -99,33 +98,37 @@ public class PaginationPlugin extends PluginAdapter {
 	}
 	
 	/**
-	 * 暂时不用此方法
-	 * @param topLevelClass
-	 * @param introspectedTable
-	 * @param name
+	 *  设置page
+	 * @param topLevelClass 类
+	 * @param introspectedTable table
 	 */
-	@SuppressWarnings("unused")
-	private void addPage(TopLevelClass topLevelClass, IntrospectedTable introspectedTable, String name) {
-		topLevelClass.addImportedType(new FullyQualifiedJavaType(pageInputClassName));
+	private void addPage(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+		String pageType="com.github.rexsheng.mybatis.core.IPageInput";
+		topLevelClass.addImportedType(new FullyQualifiedJavaType(pageType));
 		CommentGenerator commentGenerator = context.getCommentGenerator();
-		Field field = new Field(name,new FullyQualifiedJavaType(pageInputClassName));
-		field.setVisibility(JavaVisibility.PROTECTED);
-		commentGenerator.addFieldComment(field, introspectedTable);
-		topLevelClass.addField(field);
-		char c = name.charAt(0);
-		String camel = Character.toUpperCase(c) + name.substring(1);
-		Method method = new Method("set" + camel);
+		Method method = new Method("setPage");
 		method.setVisibility(JavaVisibility.PUBLIC);
-		method.addParameter(new Parameter(new FullyQualifiedJavaType(pageInputClassName), name));
-		method.addBodyLine("this." + name + "=" + name + ";");
+		method.addParameter(new Parameter(new FullyQualifiedJavaType(pageType), "page"));
+		method.addBodyLine("this.pageIndex=page.getPageIndex();");
+		method.addBodyLine("this.pageSize=page.getPageSize();");
 		commentGenerator.addGeneralMethodComment(method, introspectedTable);
 		topLevelClass.addMethod(method);
-		method = new Method("get" + camel);
-		method.setVisibility(JavaVisibility.PUBLIC);
-		method.setReturnType(FullyQualifiedJavaType.getIntInstance());
-		method.addBodyLine("return " + name + ";");
-		commentGenerator.addGeneralMethodComment(method, introspectedTable);
-		topLevelClass.addMethod(method);
+		
+		Method method2 = new Method("setPage");
+		method2.setVisibility(JavaVisibility.PUBLIC);
+		method2.addParameter(new Parameter(FullyQualifiedJavaType.getIntInstance(), "pageIndex"));
+		method2.addParameter(new Parameter(FullyQualifiedJavaType.getIntInstance(), "pageSize"));
+		method2.addBodyLine("this.pageIndex=pageIndex;");
+		method2.addBodyLine("this.pageSize=pageSize;");
+		commentGenerator.addGeneralMethodComment(method2, introspectedTable);
+		topLevelClass.addMethod(method2);
+		
+		Method startMethod = new Method("getStartIndex");
+		startMethod.setVisibility(JavaVisibility.PUBLIC);
+		startMethod.setReturnType(FullyQualifiedJavaType.getIntInstance());
+		startMethod.addBodyLine("return this.pageIndex>0?(this.pageIndex-1)*this.pageSize:0;");
+		commentGenerator.addGeneralMethodComment(startMethod, introspectedTable);
+		topLevelClass.addMethod(startMethod);
 	}
 
 	/**
@@ -135,5 +138,10 @@ public class PaginationPlugin extends PluginAdapter {
 	 */
 	public boolean validate(List<String> warnings) {
 		return true;
+	}
+
+
+	public String getPageInputClassName() {
+		return pageInputClassName;
 	}
 }

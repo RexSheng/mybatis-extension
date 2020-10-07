@@ -4,11 +4,11 @@ package com.github.rexsheng.mybatis.core;
  * @author RexSheng
  * 2020年6月21日 下午2:02:24
  */
-public class PageInput {
+public class PageInput implements IPageInput{
 
-	private Integer pageIndex;
+	protected Integer pageIndex;
 	
-	private Integer pageSize;
+	protected Integer pageSize;
 	
 	public PageInput(){}
 	

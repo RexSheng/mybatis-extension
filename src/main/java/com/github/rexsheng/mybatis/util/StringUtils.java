@@ -8,8 +8,8 @@ public class StringUtils {
 	
 	/**
 	 * 驼峰转下划线
-	 * @param source
-	 * @return
+	 * @param source 字符串
+	 * @return 转换后的字符
 	 */
 	public static String camelCaseToUnderLine(String source) {
 		StringBuilder sb = new StringBuilder();
@@ -27,8 +27,8 @@ public class StringUtils {
 	
 	/**
 	 * 驼峰转下划线
-	 * @param source
-	 * @return
+	 * @param source 字符串
+	 * @return 字符串
 	 */
 	public static String underlineToCamelCase(String source) {
 		Boolean preConverted = false;
@@ -53,8 +53,8 @@ public class StringUtils {
 	
 	/**
 	 * 首字母小写，大写转下划线
-	 * @param source
-	 * @return
+	 * @param source 字符串
+	 * @return 字符串
 	 */
 	public static String capitalToUnderLine(String source) {
 		StringBuilder sb = new StringBuilder();
