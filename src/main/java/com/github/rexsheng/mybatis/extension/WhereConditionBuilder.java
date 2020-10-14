@@ -17,8 +17,6 @@ public class WhereConditionBuilder<T> extends EntityInfo<T>{
 	
 	private Object value;
 	
-	
-
 	public WhereConditionBuilder(Class<T> clazz) {
 		super(clazz);
 		this.isValid=true;

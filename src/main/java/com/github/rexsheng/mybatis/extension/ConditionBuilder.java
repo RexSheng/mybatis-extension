@@ -403,6 +403,80 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 		return this;
 	}
 	
+	/**
+	 * not like 
+	 * @param <E> value类型
+	 * @param column 列名
+	 * @param value 值
+	 * @return 当前条件
+	 * @since 1.1.2
+	 */
+	public <E> ConditionBuilder<T> notLike(SFunction<T,E> column,E value){
+		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
+		condition.setValue(value);
+		condition.setRelation("not like");//$NON-NLS-1$
+		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
+		this.whereConditions.add(condition);
+		return this;
+	}
+	
+	/**
+	 * not like
+	 * @param <E> value类型
+	 * @param column 列名
+	 * @param value 值
+	 * @param when 预判条件
+	 * @return 当前条件
+	 * @since 1.1.2
+	 */
+	public <E> ConditionBuilder<T> notLike(SFunction<T,E> column,E value,Predicate<E> when){
+		if(when.test(value)) {
+			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
+			condition.setValue(value);
+			condition.setRelation("not like");//$NON-NLS-1$
+			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
+			this.whereConditions.add(condition);
+		}
+		return this;
+	}
+	
+	/**
+	 * not like
+	 * @param <E> value类型
+	 * @param columnName 列名
+	 * @param value 值
+	 * @return 当前条件
+	 * @since 1.1.2
+	 */
+	public <E> ConditionBuilder<T> notLike(String columnName,E value){
+		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
+		condition.setValue(value);
+		condition.setRelation("not like");//$NON-NLS-1$
+		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
+		this.whereConditions.add(condition);
+		return this;
+	}
+	
+	/**
+	 * not like
+	 * @param <E> value类型
+	 * @param columnName 列名
+	 * @param value 值
+	 * @param when 预判条件
+	 * @return 当前条件
+	 * @since 1.1.2
+	 */
+	public <E> ConditionBuilder<T> notLike(String columnName,E value,Predicate<E> when){
+		if(when.test(value)) {
+			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
+			condition.setValue(value);
+			condition.setRelation("not like");//$NON-NLS-1$
+			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
+			this.whereConditions.add(condition);
+		}
+		return this;
+	}
+	
 	public <E> ConditionBuilder<T> in(SFunction<T,E> column,List<E> value){
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 		condition.setListValue(true);
@@ -447,6 +521,14 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 		return this;
 	}
 	
+	/**
+	 * not in
+	 * @param <E> 列表元素类型
+	 * @param column 列名
+	 * @param value 列表值
+	 * @return 当前条件
+	 * @since 1.1.2
+	 */
 	public <E> ConditionBuilder<T> notIn(SFunction<T,E> column,List<E> value){
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 		condition.setListValue(true);
@@ -457,6 +539,15 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 		return this;
 	}
 	
+	/**
+	 * not in
+	 * @param <E> 列表元素类型
+	 * @param column 列名
+	 * @param value 列表值
+	 * @param when 预判条件,传入Predicate的为当前方法的value参数
+	 * @return 当前条件
+	 * @since 1.1.2
+	 */
 	public <E> ConditionBuilder<T> notIn(SFunction<T,E> column,List<E> value,Predicate<List<E>> when){
 		if(when.test(value)) {
 			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
@@ -469,6 +560,14 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 		return this;
 	}
 	
+	/**
+	 * not in
+	 * @param <E> 列表元素类型
+	 * @param columnName 列名
+	 * @param value 列表值
+	 * @return 当前条件
+	 * @since 1.1.2
+	 */
 	public <E> ConditionBuilder<T> notIn(String columnName,List<E> value){
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 		condition.setListValue(true);
@@ -479,6 +578,15 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 		return this;
 	}
 	
+	/**
+	 * not in
+	 * @param <E> 列表元素类型
+	 * @param columnName 列名
+	 * @param value 列表值
+	 * @param when 预判条件,传入Predicate的为当前方法的value参数
+	 * @return 当前条件
+	 * @since 1.1.2
+	 */
 	public <E> ConditionBuilder<T> notIn(String columnName,List<E> value,Predicate<List<E>> when){
 		if(when.test(value)) {
 			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());

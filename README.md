@@ -98,7 +98,7 @@ public class MapperTest {
 1. 新增：DynamicMapper批量更新方法updateByBuilder，批量删除方法deleteByBuilder，查询总条数方法countBySql、countBySqlWithParams
 2. 新增：tablename注解新增catalog,schema配置，TableColumnNamePlugin插件更新
 3. 新增：selectByBuilder支持distinct
-4. 新增：where条件notIn
+4. 新增：where条件notIn,notLike
 5. 新增：BuilderConfiguration配置maxInLength，自动拆分列表值为or连接的条件，用于解决oracle中in最多1000个值的问题
 6. 优化：BuilderConfiguration中默认beginDelimiter和endDelimiter为空白字符串
 
