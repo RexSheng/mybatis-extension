@@ -13,12 +13,15 @@ public class JoinConditionBuilder<L,R> extends EntityInfo<L>{
 	
 	private List<JoinColumnsInternal<L,R>> conditions;
 	
+	private List<JoinColumnsInternal<L,R>> conditionsForUpdate;
+	
 	private Class<R> rightClazz;
 
 	public JoinConditionBuilder(Class<L> leftClazz,Class<R> rightClazz) {
 		super(leftClazz);
 		this.rightClazz=rightClazz;
 		this.conditions=new ArrayList<>();
+		this.conditionsForUpdate=new ArrayList<>();
 	}
 
 	public JoinConditionBuilder<L,R> on(SFunction<L,Object> leftColumn,SFunction<R,Object> rightColumn){
@@ -26,6 +29,21 @@ public class JoinConditionBuilder<L,R> extends EntityInfo<L>{
 		ColumnQueryBuilder<R> right=new ColumnQueryBuilder<R>(rightClazz,ReflectUtil.fnToFieldName(rightColumn));
 		JoinColumnsInternal<L,R> ref=new JoinColumnsInternal<>(left,right);
 		this.conditions.add(ref);
+		return this;
+	}
+	
+	/**
+	 * update语句中设置左列值=右列值
+	 * @param leftColumn 左表列
+	 * @param rightColumn 右表列
+	 * @return 当前条件
+	 * @since 1.1.2
+	 */
+	public JoinConditionBuilder<L,R> setColumnValue(SFunction<L,Object> leftColumn,SFunction<R,Object> rightColumn){
+		ColumnQueryBuilder<L> left=new ColumnQueryBuilder<L>(super.getEntityClass(),ReflectUtil.fnToFieldName(leftColumn));
+		ColumnQueryBuilder<R> right=new ColumnQueryBuilder<R>(rightClazz,ReflectUtil.fnToFieldName(rightColumn));
+		JoinColumnsInternal<L,R> ref=new JoinColumnsInternal<>(left,right);
+		this.conditionsForUpdate.add(ref);
 		return this;
 	}
 	
@@ -37,6 +55,10 @@ public class JoinConditionBuilder<L,R> extends EntityInfo<L>{
 		return rightClazz;
 	}
 	
+	public List<JoinColumnsInternal<L,R>> getConditionsForUpdate() {
+		return conditionsForUpdate;
+	}
+
 	public static class JoinColumnsInternal<L,R>{
 		private ColumnQueryBuilder<L> leftColumn;
 

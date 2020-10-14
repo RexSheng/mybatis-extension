@@ -24,7 +24,7 @@ mybatis扩展库，纯mybatis原生支持，可用于辅助mybatis-plus、tk-myb
 <dependency>
     <groupId>com.github.rexsheng</groupId>
     <artifactId>mybatis-extension</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
 </dependency>
 
 ```
@@ -94,20 +94,28 @@ public class MapperTest {
 	}
 }
 ```
+##### v<font size="3">1.1.2</font>  date: <font size="3">2020/10/17</font>
+1. 新增：DynamicMapper批量更新方法updateByBuilder，批量删除方法deleteByBuilder，查询总条数方法countBySql、countBySqlWithParams
+2. 新增：tablename注解新增catalog,schema配置，TableColumnNamePlugin插件更新
+3. 新增：selectByBuilder支持distinct
+4. 新增：where条件notIn
+5. 新增：BuilderConfiguration配置maxInLength，自动拆分列表值为or连接的条件，用于解决oracle中in最多1000个值的问题
+6. 优化：BuilderConfiguration中默认beginDelimiter和endDelimiter为空白字符串
+
 ##### v<font size="3">1.1.1</font>  date: <font size="3">2020/10/08</font>
-1. 新增DynamicMapper接口sql传参方法selectBySqlWithParams，selectByMapWithParams。
+1. 新增：DynamicMapper接口sql传参方法selectBySqlWithParams，selectByMapWithParams。
    sql里不必再手动拼接参数，写法与xml语法保持一致，支持参数直接传入list自动拆解
-2. 删除调试日志
+2. 优化：删除调试日志
 
 ##### v<font size="3">1.1.0</font>  date: <font size="3">2020/10/05</font>
-1. TableQueryBuilder类新增设置分页方法setPage,新增开启计算总条数方法totalCountEnabled()
-2. 优化mbg分页插件，支持传入page参数，支持只设置pageSize，pageIndex改为非必须
-3. BuilderConfiguration新增dbType属性
-4. 修改批量插入方法不使用配置方法获取列名的问题
-5. 添加部分注释
+1. 新增：TableQueryBuilder类新增设置分页方法setPage,新增开启计算总条数方法totalCountEnabled()
+2. 新增：mbg分页插件，支持传入page参数，支持只设置pageSize，pageIndex改为非必须
+3. 新增：BuilderConfiguration中配置dbType，默认值为"mysql"
+4. bug：批量插入方法不使用配置方法获取列名的问题
+5. 优化：调整部分注释
 
 ##### v<font size="3">1.0.1</font>  date: <font size="3">2020/09/28</font>
-1. 新增DynamicMapper接口批量插入方法batchInsert，支持全局配置，示例程序同步增加测试用例
+1. 新增：DynamicMapper接口批量插入方法batchInsert，支持全局配置，示例程序同步增加测试用例
 
 ##### v<font size="3">1.0.0</font>  date: <font size="3">2020/09/01</font>
 1. 第一版发布，提供springboot示例程序下载

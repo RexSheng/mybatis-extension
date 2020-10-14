@@ -3,10 +3,12 @@ package com.github.rexsheng.mybatis.mapper;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.ResultType;
 import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.UpdateProvider;
 
 import com.github.rexsheng.mybatis.extension.QueryBuilder;
 import com.github.rexsheng.mybatis.provider.DynamicSqlProvider;
@@ -36,6 +38,15 @@ public interface DynamicMapper {
 	 */
 	@SelectProvider(type = DynamicSqlProvider.class,method = "selectBySql")
 	<T> List<T> selectBySql(String sql,Class<T> clazz);
+	
+	/**
+	 * 根据传入的sql查询总条数
+	 * @param sql 计算总条数的sql
+	 * @return sql结果
+	 * @since 1.1.2
+	 */
+	@SelectProvider(type = DynamicSqlProvider.class,method = "selectBySql")
+	long countBySql(String sql);
 
 	/**
 	 * 根据传入的sql、参数及返回类型执行查询
@@ -61,6 +72,16 @@ public interface DynamicMapper {
 	 */
 	@SelectProvider(type = DynamicSqlProvider.class,method = "selectBySqlWithParams")
 	<T> List<T> selectBySqlWithParams(@Param("sql") String sql,@Param("params") Map<String,Object> params,@Param("clazz") Class<T> clazz);
+	
+	/**
+	 * 根据传入的sql、参数查询总条数
+	 * @param sql 计算总条数的sql
+	 * @param params 参数
+	 * @return sql结果
+	 * @since 1.1.2
+	 */
+	@SelectProvider(type = DynamicSqlProvider.class,method = "selectBySqlWithParams")
+	long countBySqlWithParams(@Param("sql") String sql,@Param("params") Map<String,Object> params);
 	
 	/**
 	 * 根据传入的sql返回map结果
@@ -93,17 +114,6 @@ public interface DynamicMapper {
 	@SelectProvider(type = DynamicSqlProvider.class,method = "selectBySqlWithParams")
 	@ResultType(Map.class)
 	List<Map<String,Object>> selectByMapWithParams(@Param("sql") String sql,@Param("params") Map<String,Object> params);
-	
-	/**
-	 * 根据构造条件查询分页数据
-	 * 参数中必须设置分页大小
-	 * @param <T> 返回数据列表类型
-	 * @param builder 构造条件
-	 * @return 列表数据
-	 * @since 1.1.0
-	 */
-//	@SelectProvider(type = DynamicSqlProvider.class,method = "selectByBuilder")
-//	<T> PagedList<T> selectByPageBuilder(QueryBuilder<T> builder);
 
 	/**
 	 * 批量新增
@@ -114,4 +124,24 @@ public interface DynamicMapper {
 	 */
 	@InsertProvider(type = DynamicSqlProvider.class,method = "insertBatch")
 	<T> int insertBatch(@Param("list") List<T> list);
+	
+	/**
+	 * 根据构造条件批量更新数据
+	 * @param <T> 数据类型
+	 * @param builder 构造条件
+	 * @return 影响的行数
+	 * @since 1.1.2
+	 */
+	@UpdateProvider(type = DynamicSqlProvider.class,method = "updateByBuilder")
+	<T> int updateByBuilder(QueryBuilder<T> builder);
+	
+	/**
+	 * 根据构造条件批量删除数据
+	 * @param <T> 数据类型
+	 * @param builder 构造条件
+	 * @return 影响的行数
+	 * @since 1.1.2
+	 */
+	@DeleteProvider(type = DynamicSqlProvider.class,method = "deleteByBuilder")
+	<T> int deleteByBuilder(QueryBuilder<T> builder);
 }

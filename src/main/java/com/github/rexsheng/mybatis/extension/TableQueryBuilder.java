@@ -39,6 +39,8 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	private long totalItemCount;
 	
 	private Boolean calculateTotalCount;
+	
+	private Boolean distinct;
 		
 	public static <T> TableQueryBuilder<T> from(Class<T> clazz){
 		return new TableQueryBuilder<T>(clazz);
@@ -62,8 +64,18 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 		this.orderByColumns=new ArrayList<>();
 		this.totalItemCount=0L;
 		this.calculateTotalCount=false;
+		this.distinct=false;
 	}
 
+	/**
+	 * distinct
+	 * @return Boolean
+	 * @since 1.1.2
+	 */
+	public TableQueryBuilder<T> distinct() {
+		this.distinct = true;
+		return this;
+	}
 	
 	public TableQueryBuilder<T> selectAll() {
 		Field[] fields=ReflectUtil.getDeclaredFields(super.getEntityClass());
@@ -117,16 +129,16 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	public TableQueryBuilder<T> selectSum(SFunction<T,Object> field,String aliasName) {
 		String fieldName=ReflectUtil.fnToFieldName(field);
 		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),fieldName,aliasName);
-		columnQuery.setPrefix("SUM(");
-		columnQuery.setSuffix(")");
+		columnQuery.setPrefix("SUM(");//$NON-NLS-1$
+		columnQuery.setSuffix(")");//$NON-NLS-1$
 		this.selectColumns.add(columnQuery);
 		return this;
 	}
 	
 	public TableQueryBuilder<T> selectSum(String columnName,String aliasName) {
 		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),aliasName,columnName);
-		columnQuery.setPrefix("SUM(");
-		columnQuery.setSuffix(")");
+		columnQuery.setPrefix("SUM(");//$NON-NLS-1$
+		columnQuery.setSuffix(")");//$NON-NLS-1$
 		this.selectColumns.add(columnQuery);
 		return this;
 	}
@@ -134,16 +146,16 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	public TableQueryBuilder<T> selectCount(SFunction<T,Object> field,String aliasName) {
 		String fieldName=ReflectUtil.fnToFieldName(field);
 		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),fieldName,aliasName);
-		columnQuery.setPrefix("COUNT(");
-		columnQuery.setSuffix(")");
+		columnQuery.setPrefix("COUNT(");//$NON-NLS-1$
+		columnQuery.setSuffix(")");//$NON-NLS-1$
 		this.selectColumns.add(columnQuery);
 		return this;
 	}
 	
 	public TableQueryBuilder<T> selectCount(String columnName,String aliasName) {
 		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),aliasName,columnName);
-		columnQuery.setPrefix("COUNT(");
-		columnQuery.setSuffix(")");
+		columnQuery.setPrefix("COUNT(");//$NON-NLS-1$
+		columnQuery.setSuffix(")");//$NON-NLS-1$
 		this.selectColumns.add(columnQuery);
 		return this;
 	}
@@ -151,16 +163,16 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	public TableQueryBuilder<T> selectMax(SFunction<T,Object> field,String aliasName) {
 		String fieldName=ReflectUtil.fnToFieldName(field);
 		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),fieldName,aliasName);
-		columnQuery.setPrefix("MAX(");
-		columnQuery.setSuffix(")");
+		columnQuery.setPrefix("MAX(");//$NON-NLS-1$
+		columnQuery.setSuffix(")");//$NON-NLS-1$
 		this.selectColumns.add(columnQuery);
 		return this;
 	}
 	
 	public TableQueryBuilder<T> selectMax(String columnName,String aliasName) {
 		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),aliasName,columnName);
-		columnQuery.setPrefix("MAX(");
-		columnQuery.setSuffix(")");
+		columnQuery.setPrefix("MAX(");//$NON-NLS-1$
+		columnQuery.setSuffix(")");//$NON-NLS-1$
 		this.selectColumns.add(columnQuery);
 		return this;
 	}
@@ -168,16 +180,16 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	public TableQueryBuilder<T> selectMin(SFunction<T,Object> field,String aliasName) {
 		String fieldName=ReflectUtil.fnToFieldName(field);
 		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),fieldName,aliasName);
-		columnQuery.setPrefix("MIN(");
-		columnQuery.setSuffix(")");
+		columnQuery.setPrefix("MIN(");//$NON-NLS-1$
+		columnQuery.setSuffix(")");//$NON-NLS-1$
 		this.selectColumns.add(columnQuery);
 		return this;
 	}
 	
 	public TableQueryBuilder<T> selectMin(String columnName,String aliasName) {
 		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),aliasName,columnName);
-		columnQuery.setPrefix("MIN(");
-		columnQuery.setSuffix(")");
+		columnQuery.setPrefix("MIN(");//$NON-NLS-1$
+		columnQuery.setSuffix(")");//$NON-NLS-1$
 		this.selectColumns.add(columnQuery);
 		return this;
 	}
@@ -196,23 +208,23 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	}
 	
 	public TableQueryBuilder<T> havingSum(Consumer<ConditionBuilder<T>> field) {
-		return having("SUM",field);
+		return having("SUM",field);//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> havingCount(Consumer<ConditionBuilder<T>> field) {
-		return having("COUNT",field);
+		return having("COUNT",field);//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> havingMax(Consumer<ConditionBuilder<T>> field) {
-		return having("MAX",field);
+		return having("MAX",field);//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> havingMin(Consumer<ConditionBuilder<T>> field) {
-		return having("MIN",field);
+		return having("MIN",field);//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> havingAvg(Consumer<ConditionBuilder<T>> field) {
-		return having("AVG",field);
+		return having("AVG",field);//$NON-NLS-1$
 	}
 	
 	/**
@@ -225,8 +237,8 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 		ConditionBuilder<T> condition=new ConditionBuilder<>(super.getEntityClass());
 		field.accept(condition);
 		condition.getWhereConditions().forEach(a->{
-			a.getColumn().setPrefix(aggregationType+"(");
-			a.getColumn().setSuffix(")");
+			a.getColumn().setPrefix(aggregationType+"(");//$NON-NLS-1$
+			a.getColumn().setSuffix(")");//$NON-NLS-1$
 		});
 		this.havingConditions.add(condition);		
 		return this;
@@ -252,28 +264,28 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 
 	public <R> JoinConditionBuilder<T,R> leftJoin(TableQueryBuilder<R> relation) {
 		JoinConditionBuilder<T,R> joinRelation=new JoinConditionBuilder<>(super.getEntityClass(),relation.getEntityClass());
-		JoinTableConditionInternal<T,R> internal=new JoinTableConditionInternal<>(relation,joinRelation,"left");
+		JoinTableConditionInternal<T,R> internal=new JoinTableConditionInternal<>(relation,joinRelation,"left");//$NON-NLS-1$
 		this.joinList.add(internal);
 		return joinRelation;
 	}
 	
 	public <R> JoinConditionBuilder<T,R> rightJoin(TableQueryBuilder<R> relation) {
 		JoinConditionBuilder<T,R> joinRelation=new JoinConditionBuilder<>(super.getEntityClass(),relation.getEntityClass());
-		JoinTableConditionInternal<T,R> internal=new JoinTableConditionInternal<>(relation,joinRelation,"right");
+		JoinTableConditionInternal<T,R> internal=new JoinTableConditionInternal<>(relation,joinRelation,"right");//$NON-NLS-1$
 		this.joinList.add(internal);
 		return joinRelation;
 	}
 	
 	public <R> JoinConditionBuilder<T,R> innerJoin(TableQueryBuilder<R> relation) {
 		JoinConditionBuilder<T,R> joinRelation=new JoinConditionBuilder<>(super.getEntityClass(),relation.getEntityClass());
-		JoinTableConditionInternal<T,R> internal=new JoinTableConditionInternal<>(relation,joinRelation,"inner");
+		JoinTableConditionInternal<T,R> internal=new JoinTableConditionInternal<>(relation,joinRelation,"inner");//$NON-NLS-1$
 		this.joinList.add(internal);
 		return joinRelation;
 	}
 	
 	public <R> JoinConditionBuilder<T,R> join(TableQueryBuilder<R> relation) {
 		JoinConditionBuilder<T,R> joinRelation=new JoinConditionBuilder<>(super.getEntityClass(),relation.getEntityClass());
-		JoinTableConditionInternal<T,R> internal=new JoinTableConditionInternal<>(relation,joinRelation,"");
+		JoinTableConditionInternal<T,R> internal=new JoinTableConditionInternal<>(relation,joinRelation,"");//$NON-NLS-1$
 		this.joinList.add(internal);
 		return joinRelation;
 	}
@@ -294,111 +306,111 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	public TableQueryBuilder<T> orderByDesc(SFunction<T,Object> field) {
 		String fieldName=ReflectUtil.fnToFieldName(field);
 		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),fieldName);
-		columnQuery.setSuffix(" DESC");
+		columnQuery.setSuffix(" DESC");//$NON-NLS-1$
 		this.orderByColumns.add(columnQuery);
 		return this;
 	}
 	
 	public TableQueryBuilder<T> orderByDesc(String columnName) {
 		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName);
-		columnQuery.setSuffix(" DESC");
+		columnQuery.setSuffix(" DESC");//$NON-NLS-1$
 		this.orderByColumns.add(columnQuery);
 		return this;
 	}
 	
 	public TableQueryBuilder<T> orderBySum(SFunction<T,Object> field) {
-		return orderByAggregation(field,"SUM");
+		return orderByAggregation(field,"SUM");//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> orderBySum(String columnName) {
-		return orderByAggregation(columnName,"SUM");
+		return orderByAggregation(columnName,"SUM");//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> orderBySumDesc(SFunction<T,Object> field) {
-		return orderByAggregationDesc(field,"SUM");
+		return orderByAggregationDesc(field,"SUM");//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> orderBySumDesc(String columnName) {
-		return orderByAggregationDesc(columnName,"SUM");
+		return orderByAggregationDesc(columnName,"SUM");//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> orderByCount(SFunction<T,Object> field) {
-		return orderByAggregation(field,"COUNT");
+		return orderByAggregation(field,"COUNT");//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> orderByCount(String columnName) {
-		return orderByAggregation(columnName,"COUNT");
+		return orderByAggregation(columnName,"COUNT");//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> orderByCountDesc(SFunction<T,Object> field) {
-		return orderByAggregationDesc(field,"COUNT");
+		return orderByAggregationDesc(field,"COUNT");//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> orderByCountDesc(String columnName) {
-		return orderByAggregationDesc(columnName,"COUNT");
+		return orderByAggregationDesc(columnName,"COUNT");//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> orderByMax(SFunction<T,Object> field) {
-		return orderByAggregation(field,"MAX");
+		return orderByAggregation(field,"MAX");//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> orderByMax(String columnName) {
-		return orderByAggregation(columnName,"MAX");
+		return orderByAggregation(columnName,"MAX");//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> orderByMaxDesc(SFunction<T,Object> field) {
-		return orderByAggregationDesc(field,"MAX");
+		return orderByAggregationDesc(field,"MAX");//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> orderByMaxDesc(String columnName) {
-		return orderByAggregationDesc(columnName,"MAX");
+		return orderByAggregationDesc(columnName,"MAX");//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> orderByMin(SFunction<T,Object> field) {
-		return orderByAggregation(field,"MIN");
+		return orderByAggregation(field,"MIN");//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> orderByMin(String columnName) {
-		return orderByAggregation(columnName,"MIN");
+		return orderByAggregation(columnName,"MIN");//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> orderByMinDesc(SFunction<T,Object> field) {
-		return orderByAggregationDesc(field,"MIN");
+		return orderByAggregationDesc(field,"MIN");//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> orderByMinDesc(String columnName) {
-		return orderByAggregationDesc(columnName,"MIN");
+		return orderByAggregationDesc(columnName,"MIN");//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> orderByAvg(SFunction<T,Object> field) {
-		return orderByAggregation(field,"AVG");
+		return orderByAggregation(field,"AVG");//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> orderByAvg(String columnName) {
-		return orderByAggregation(columnName,"AVG");
+		return orderByAggregation(columnName,"AVG");//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> orderByAvgDesc(SFunction<T,Object> field) {
-		return orderByAggregationDesc(field,"AVG");
+		return orderByAggregationDesc(field,"AVG");//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> orderByAvgDesc(String columnName) {
-		return orderByAggregationDesc(columnName,"AVG");
+		return orderByAggregationDesc(columnName,"AVG");//$NON-NLS-1$
 	}
 	
 	public TableQueryBuilder<T> orderByAggregation(SFunction<T,Object> field,String aggregationType) {
 		String fieldName=ReflectUtil.fnToFieldName(field);
 		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),fieldName);
-		columnQuery.setPrefix(aggregationType+"(");
-		columnQuery.setSuffix(")");
+		columnQuery.setPrefix(aggregationType+"(");//$NON-NLS-1$
+		columnQuery.setSuffix(")");//$NON-NLS-1$
 		this.orderByColumns.add(columnQuery);
 		return this;
 	}
 	
 	public TableQueryBuilder<T> orderByAggregation(String columnName,String aggregationType) {
 		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName);
-		columnQuery.setPrefix(aggregationType+"(");
-		columnQuery.setSuffix(")");
+		columnQuery.setPrefix(aggregationType+"(");//$NON-NLS-1$
+		columnQuery.setSuffix(")");//$NON-NLS-1$
 		this.orderByColumns.add(columnQuery);
 		return this;
 	}
@@ -406,16 +418,16 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	public TableQueryBuilder<T> orderByAggregationDesc(SFunction<T,Object> field,String aggregationType) {
 		String fieldName=ReflectUtil.fnToFieldName(field);
 		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),fieldName);
-		columnQuery.setPrefix(aggregationType+"(");
-		columnQuery.setSuffix(") DESC");
+		columnQuery.setPrefix(aggregationType+"(");//$NON-NLS-1$
+		columnQuery.setSuffix(") DESC");//$NON-NLS-1$
 		this.orderByColumns.add(columnQuery);
 		return this;
 	}
 	
 	public TableQueryBuilder<T> orderByAggregationDesc(String columnName,String aggregationType) {
 		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName);
-		columnQuery.setPrefix(aggregationType+"(");
-		columnQuery.setSuffix(") DESC");
+		columnQuery.setPrefix(aggregationType+"(");//$NON-NLS-1$
+		columnQuery.setSuffix(") DESC");//$NON-NLS-1$
 		this.orderByColumns.add(columnQuery);
 		return this;
 	}
@@ -473,6 +485,13 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	}
 
 	public Integer getSkipSize() {
+		return getStartIndex();
+	}
+	
+	/**
+	 * @since 1.1.2
+	 */
+	public Integer getStartIndex() {
 		if(skipSize!=null) {
 			return skipSize;
 		}
@@ -482,6 +501,21 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 		else {
 			return null;
 		}
+	}
+	
+	/**
+	 * @since 1.1.2
+	 */
+	public Integer getEndIndex() {
+		if(pageSize!=null) {
+			if(pageIndex!=null && pageIndex>0) {
+				return pageIndex*pageSize;
+			}
+			else {
+				return pageSize;
+			}
+		}
+		return null;
 	}
 
 	public Integer getPageSize() {
@@ -534,6 +568,10 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	public TableQueryBuilder<T> totalCountEnabled() {
 		this.calculateTotalCount = true;
 		return this;
+	}
+
+	public Boolean getDistinct() {
+		return distinct;
 	}
 
 	public static class JoinTableConditionInternal<L,R>{

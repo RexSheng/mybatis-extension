@@ -11,6 +11,8 @@ import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.codegen.mybatis3.MyBatis3FormattingUtilities;
 
+import com.github.rexsheng.mybatis.util.StringUtils;
+
 /**
  * 
  * @author https://github.com/RexSheng ©2019 2019年11月8日 下午2:55:14
@@ -21,7 +23,28 @@ public class TableColumnNamePlugin extends PluginAdapter {
 	public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
 		// TODO Auto-generated method stub
 		topLevelClass.addImportedType(new FullyQualifiedJavaType("com.github.rexsheng.mybatis.annotation.TableName"));
-		topLevelClass.addAnnotation("@TableName(\""+introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime()+"\")");
+		StringBuilder sb=new StringBuilder();
+		if(StringUtils.hasValue(introspectedTable.getTableConfiguration().getCatalog())) {
+			sb.append("catalog=\"");
+			sb.append(introspectedTable.getTableConfiguration().getCatalog());
+			sb.append("\",");
+		}
+		if(StringUtils.hasValue(introspectedTable.getTableConfiguration().getSchema())) {
+			sb.append("schema=\"");
+			sb.append(introspectedTable.getTableConfiguration().getSchema());
+			sb.append("\",");
+		}
+		if(sb.length()>0) {
+			sb.append("table=\"");
+			sb.append(introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime());
+			sb.append("\"");
+		}
+		else {
+			sb.append("\"");
+			sb.append(introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime());
+			sb.append("\"");
+		}
+		topLevelClass.addAnnotation("@TableName("+sb.toString()+")");
 		return super.modelBaseRecordClassGenerated(topLevelClass, introspectedTable);
 	}
 

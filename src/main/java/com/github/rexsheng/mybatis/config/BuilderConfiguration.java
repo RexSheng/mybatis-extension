@@ -22,20 +22,23 @@ public class BuilderConfiguration {
 	
 	private String dbType;
 	
+	private int maxInLength;
+	
 	private Function<Class<?>,String> tableNameHandler;
 	
 	private Function<ColumnQueryBuilder<?>,String> columnNameHandler;
 	
-	private final List<String> DB_TYPE_LIST= Arrays.asList("mysql","oracle","sqlserver");
+	private final List<String> DB_TYPE_LIST= Arrays.asList("mysql","oracle","sqlserver");//$NON-NLS-1$
 
 	public BuilderConfiguration() {
-		this.beginDelimiter="`";
-		this.endDelimiter="`";
-		this.dbType="mysql";
+		this.beginDelimiter="";//$NON-NLS-1$
+		this.endDelimiter="";//$NON-NLS-1$
+		this.dbType="mysql";//$NON-NLS-1$
+		this.setMaxInLength(-1);
 		this.tableNameHandler=(clazz)->{
 			TableName tableName=clazz.getAnnotation(TableName.class);
 			if(tableName!=null) {
-				return tableName.value();
+				return composeFullyQualifiedTableName(tableName.catalog(),tableName.schema(),tableName.table(),tableName.value(),'.');
 			}
 			else {
 				return StringUtils.capitalToUnderLine(clazz.getSimpleName());
@@ -99,6 +102,45 @@ public class BuilderConfiguration {
 	public String getDbType() {
 		return dbType;
 	}
+	
+	public int getMaxInLength() {
+		return maxInLength;
+	}
+
+	public void setMaxInLength(int maxInLength) {
+		this.maxInLength = maxInLength;
+	}
+	
+	public static String composeFullyQualifiedTableName(String catalog,
+            String schema, String tableName, String bakTableName, char separator) {
+        StringBuilder sb = new StringBuilder();
+
+        if (StringUtils.hasValue(catalog)) {
+            sb.append(catalog);
+            sb.append(separator);
+        }
+
+        if (StringUtils.hasValue(schema)) {
+            sb.append(schema);
+            sb.append(separator);
+        } else {
+            if (sb.length() > 0) {
+                sb.append(separator);
+            }
+        }
+
+        if (StringUtils.hasValue(tableName)) {
+            sb.append(tableName);
+        } 
+        else if (StringUtils.hasValue(bakTableName)) {
+        	sb.append(bakTableName);
+        }
+        else {
+        	throw new RuntimeException("必须指定表名");//$NON-NLS-1$
+        }
+
+        return sb.toString();
+    }
 
 	/**
 	 * 设置数据库类型，默认mysql,目前支持"mysql","oracle","sqlserver"三种
@@ -107,7 +149,7 @@ public class BuilderConfiguration {
 	 */
 	public void setDbType(String dbType) {
 		if(dbType==null || !DB_TYPE_LIST.contains(dbType.toLowerCase())) {
-			throw new RuntimeException("无效的数据库类型，请指定为"+String.join("、", DB_TYPE_LIST)+"中的一种");
+			throw new RuntimeException("无效的数据库类型，请指定为"+String.join("、", DB_TYPE_LIST)+"中的一种");//$NON-NLS-1$
 		}
 		this.dbType = dbType;
 	}

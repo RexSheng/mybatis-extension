@@ -40,7 +40,7 @@ public class ColumnQueryBuilder<T> extends EntityInfo<T>{
 		this.inputColumnName=inputColumnName;
 		this.prefix="";
 		this.suffix="";
-		if("*".equals(fieldName) || Pattern.compile("[0-9]*").matcher(fieldName).matches()) {
+		if("*".equals(fieldName) || Pattern.compile("[0-9]*").matcher(fieldName).matches()) {//$NON-NLS-1$
 			this.supportAlias=false;
 		}
 		else {
@@ -73,11 +73,11 @@ public class ColumnQueryBuilder<T> extends EntityInfo<T>{
 	}
 	
 	public String buildSql(BuilderConfiguration configuration) {
-		return this.prefix+getActualColumnName(configuration)+this.suffix+" AS "+this.getColumnName();
+		return this.prefix+getActualColumnName(configuration)+this.suffix+" AS "+this.getColumnName();//$NON-NLS-1$
 	}
 	
 	public String buildSql(BuilderConfiguration configuration,String tableAlias) {
-		return this.prefix+(supportAlias?(tableAlias+"."):"")+getActualColumnName(configuration)+this.suffix+" AS "+this.getColumnName();
+		return this.prefix+(supportAlias?(tableAlias+"."):"")+getActualColumnName(configuration)+this.suffix+" AS "+this.getColumnName();//$NON-NLS-1$
 	}
 	
 	public String buildSqlNoAs(BuilderConfiguration configuration) {

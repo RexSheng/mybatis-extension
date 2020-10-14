@@ -73,4 +73,7 @@ public class StringUtils {
 		return sb.toString();
 	}
 	
+	public static boolean hasValue(String s) {
+        return s != null && s.length() > 0;
+    }
 }

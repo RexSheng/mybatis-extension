@@ -53,7 +53,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 	public <E> ConditionBuilder<T> eq(SFunction<T,E> column,E value){
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 		condition.setValue(value);
-		condition.setRelation("=");
+		condition.setRelation("=");//$NON-NLS-1$
 		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
 		this.whereConditions.add(condition);
 		return this;
@@ -63,7 +63,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 		if(when.test(value)) {
 			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 			condition.setValue(value);
-			condition.setRelation("=");
+			condition.setRelation("=");//$NON-NLS-1$
 			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
 			this.whereConditions.add(condition);
 		}
@@ -73,7 +73,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 	public <E> ConditionBuilder<T> eq(String columnName,E value){
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 		condition.setValue(value);
-		condition.setRelation("=");
+		condition.setRelation("=");//$NON-NLS-1$
 		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
 		this.whereConditions.add(condition);
 		return this;
@@ -83,7 +83,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 		if(when.test(value)) {
 			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 			condition.setValue(value);
-			condition.setRelation("=");
+			condition.setRelation("=");//$NON-NLS-1$
 			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
 			this.whereConditions.add(condition);
 		}
@@ -93,7 +93,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 	public <E> ConditionBuilder<T> notEq(SFunction<T,E> column,E value){
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 		condition.setValue(value);
-		condition.setRelation("<>");
+		condition.setRelation("<>");//$NON-NLS-1$
 		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
 		this.whereConditions.add(condition);
 		return this;
@@ -103,7 +103,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 		if(when.test(value)) {
 			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 			condition.setValue(value);
-			condition.setRelation("<>");
+			condition.setRelation("<>");//$NON-NLS-1$
 			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
 			this.whereConditions.add(condition);
 		}
@@ -113,7 +113,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 	public <E> ConditionBuilder<T> notEq(String columnName,E value){
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 		condition.setValue(value);
-		condition.setRelation("<>");
+		condition.setRelation("<>");//$NON-NLS-1$
 		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
 		this.whereConditions.add(condition);
 		return this;
@@ -123,7 +123,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 		if(when.test(value)) {
 			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 			condition.setValue(value);
-			condition.setRelation("<>");
+			condition.setRelation("<>");//$NON-NLS-1$
 			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
 			this.whereConditions.add(condition);
 		}
@@ -132,7 +132,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 	
 	public <E> ConditionBuilder<T> isNull(SFunction<T,E> column){
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
-		condition.setRelation("IS NULL");
+		condition.setRelation("IS NULL");//$NON-NLS-1$
 		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
 		this.whereConditions.add(condition);
 		return this;
@@ -141,7 +141,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 	public <E> ConditionBuilder<T> isNull(SFunction<T,E> column,Predicate<E> when){
 		if(when.test(null)) {
 			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
-			condition.setRelation("IS NULL");
+			condition.setRelation("IS NULL");//$NON-NLS-1$
 			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
 			this.whereConditions.add(condition);
 		}
@@ -150,7 +150,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 	
 	public <E> ConditionBuilder<T> isNull(String columnName){
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
-		condition.setRelation("IS NULL");
+		condition.setRelation("IS NULL");//$NON-NLS-1$
 		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
 		this.whereConditions.add(condition);
 		return this;
@@ -159,7 +159,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 	public <E> ConditionBuilder<T> isNull(String columnName,Predicate<E> when){
 		if(when.test(null)) {
 			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
-			condition.setRelation("IS NULL");
+			condition.setRelation("IS NULL");//$NON-NLS-1$
 			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
 			this.whereConditions.add(condition);
 		}
@@ -168,7 +168,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 	
 	public <E> ConditionBuilder<T> isNotNull(SFunction<T,E> column){
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
-		condition.setRelation("IS NOT NULL");
+		condition.setRelation("IS NOT NULL");//$NON-NLS-1$
 		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
 		this.whereConditions.add(condition);
 		return this;
@@ -177,7 +177,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 	public <E> ConditionBuilder<T> isNotNull(SFunction<T,E> column,Predicate<E> when){
 		if(when.test(null)) {
 			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
-			condition.setRelation("IS NOT NULL");
+			condition.setRelation("IS NOT NULL");//$NON-NLS-1$
 			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
 			this.whereConditions.add(condition);
 		}
@@ -186,7 +186,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 	
 	public <E> ConditionBuilder<T> isNotNull(String columnName){
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
-		condition.setRelation("IS NOT NULL");
+		condition.setRelation("IS NOT NULL");//$NON-NLS-1$
 		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
 		this.whereConditions.add(condition);
 		return this;
@@ -195,7 +195,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 	public <E> ConditionBuilder<T> isNotNull(String columnName,Predicate<E> when){
 		if(when.test(null)) {
 			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
-			condition.setRelation("IS NOT NULL");
+			condition.setRelation("IS NOT NULL");//$NON-NLS-1$
 			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
 			this.whereConditions.add(condition);
 		}
@@ -205,7 +205,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 	public <E> ConditionBuilder<T> gt(SFunction<T,E> column,E value){
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 		condition.setValue(value);
-		condition.setRelation(">");
+		condition.setRelation(">");//$NON-NLS-1$
 		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
 		this.whereConditions.add(condition);
 		return this;
@@ -215,7 +215,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 		if(when.test(value)) {
 			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 			condition.setValue(value);
-			condition.setRelation(">");
+			condition.setRelation(">");//$NON-NLS-1$
 			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
 			this.whereConditions.add(condition);
 		}
@@ -225,7 +225,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 	public <E> ConditionBuilder<T> gt(String columnName,E value){
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 		condition.setValue(value);
-		condition.setRelation(">");
+		condition.setRelation(">");//$NON-NLS-1$
 		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
 		this.whereConditions.add(condition);
 		return this;
@@ -235,7 +235,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 		if(when.test(value)) {
 			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 			condition.setValue(value);
-			condition.setRelation(">");
+			condition.setRelation(">");//$NON-NLS-1$
 			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
 			this.whereConditions.add(condition);
 		}
@@ -245,7 +245,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 	public <E> ConditionBuilder<T> gte(SFunction<T,E> column,E value){
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 		condition.setValue(value);
-		condition.setRelation(">=");
+		condition.setRelation(">=");//$NON-NLS-1$
 		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
 		this.whereConditions.add(condition);
 		return this;
@@ -255,7 +255,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 		if(when.test(value)) {
 			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 			condition.setValue(value);
-			condition.setRelation(">=");
+			condition.setRelation(">=");//$NON-NLS-1$
 			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
 			this.whereConditions.add(condition);
 		}
@@ -265,7 +265,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 	public <E> ConditionBuilder<T> gte(String columnName,E value){
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 		condition.setValue(value);
-		condition.setRelation(">=");
+		condition.setRelation(">=");//$NON-NLS-1$
 		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
 		this.whereConditions.add(condition);
 		return this;
@@ -275,7 +275,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 		if(when.test(value)) {
 			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 			condition.setValue(value);
-			condition.setRelation(">=");
+			condition.setRelation(">=");//$NON-NLS-1$
 			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
 			this.whereConditions.add(condition);
 		}
@@ -285,7 +285,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 	public <E> ConditionBuilder<T> lt(SFunction<T,E> column,E value){
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 		condition.setValue(value);
-		condition.setRelation("<");
+		condition.setRelation("<");//$NON-NLS-1$
 		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
 		this.whereConditions.add(condition);
 		return this;
@@ -295,7 +295,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 		if(when.test(value)) {
 			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 			condition.setValue(value);
-			condition.setRelation("<");
+			condition.setRelation("<");//$NON-NLS-1$
 			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
 			this.whereConditions.add(condition);
 		}
@@ -305,7 +305,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 	public <E> ConditionBuilder<T> lt(String columnName,E value){
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 		condition.setValue(value);
-		condition.setRelation("<");
+		condition.setRelation("<");//$NON-NLS-1$
 		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
 		this.whereConditions.add(condition);
 		return this;
@@ -315,7 +315,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 		if(when.test(value)) {
 			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 			condition.setValue(value);
-			condition.setRelation("<");
+			condition.setRelation("<");//$NON-NLS-1$
 			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
 			this.whereConditions.add(condition);
 		}
@@ -325,7 +325,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 	public <E> ConditionBuilder<T> lte(SFunction<T,E> column,E value){
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 		condition.setValue(value);
-		condition.setRelation("<=");
+		condition.setRelation("<=");//$NON-NLS-1$
 		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
 		this.whereConditions.add(condition);
 		return this;
@@ -335,7 +335,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 		if(when.test(value)) {
 			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 			condition.setValue(value);
-			condition.setRelation("<=");
+			condition.setRelation("<=");//$NON-NLS-1$
 			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
 			this.whereConditions.add(condition);
 		}
@@ -345,7 +345,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 	public <E> ConditionBuilder<T> lte(String columnName,E value){
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 		condition.setValue(value);
-		condition.setRelation("<=");
+		condition.setRelation("<=");//$NON-NLS-1$
 		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
 		this.whereConditions.add(condition);
 		return this;
@@ -355,7 +355,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 		if(when.test(value)) {
 			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 			condition.setValue(value);
-			condition.setRelation("<=");
+			condition.setRelation("<=");//$NON-NLS-1$
 			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
 			this.whereConditions.add(condition);
 		}
@@ -366,7 +366,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 	public <E> ConditionBuilder<T> like(SFunction<T,E> column,E value){
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 		condition.setValue(value);
-		condition.setRelation("like");
+		condition.setRelation("like");//$NON-NLS-1$
 		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
 		this.whereConditions.add(condition);
 		return this;
@@ -376,7 +376,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 		if(when.test(value)) {
 			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 			condition.setValue(value);
-			condition.setRelation("like");
+			condition.setRelation("like");//$NON-NLS-1$
 			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
 			this.whereConditions.add(condition);
 		}
@@ -386,7 +386,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 	public <E> ConditionBuilder<T> like(String columnName,E value){
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 		condition.setValue(value);
-		condition.setRelation("like");
+		condition.setRelation("like");//$NON-NLS-1$
 		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
 		this.whereConditions.add(condition);
 		return this;
@@ -396,7 +396,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 		if(when.test(value)) {
 			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 			condition.setValue(value);
-			condition.setRelation("like");
+			condition.setRelation("like");//$NON-NLS-1$
 			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
 			this.whereConditions.add(condition);
 		}
@@ -407,7 +407,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 		condition.setListValue(true);
 		condition.setValue(value);
-		condition.setRelation("in");
+		condition.setRelation("in");//$NON-NLS-1$
 		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
 		this.whereConditions.add(condition);
 		return this;
@@ -418,7 +418,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 			condition.setListValue(true);
 			condition.setValue(value);
-			condition.setRelation("in");
+			condition.setRelation("in");//$NON-NLS-1$
 			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
 			this.whereConditions.add(condition);
 		}
@@ -429,7 +429,7 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 		condition.setListValue(true);
 		condition.setValue(value);
-		condition.setRelation("in");
+		condition.setRelation("in");//$NON-NLS-1$
 		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
 		this.whereConditions.add(condition);
 		return this;
@@ -440,7 +440,51 @@ public class ConditionBuilder<T> extends EntityInfo<T>{
 			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
 			condition.setListValue(true);
 			condition.setValue(value);
-			condition.setRelation("in");
+			condition.setRelation("in");//$NON-NLS-1$
+			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
+			this.whereConditions.add(condition);
+		}
+		return this;
+	}
+	
+	public <E> ConditionBuilder<T> notIn(SFunction<T,E> column,List<E> value){
+		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
+		condition.setListValue(true);
+		condition.setValue(value);
+		condition.setRelation("not in");//$NON-NLS-1$
+		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
+		this.whereConditions.add(condition);
+		return this;
+	}
+	
+	public <E> ConditionBuilder<T> notIn(SFunction<T,E> column,List<E> value,Predicate<List<E>> when){
+		if(when.test(value)) {
+			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
+			condition.setListValue(true);
+			condition.setValue(value);
+			condition.setRelation("not in");//$NON-NLS-1$
+			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(column)));
+			this.whereConditions.add(condition);
+		}
+		return this;
+	}
+	
+	public <E> ConditionBuilder<T> notIn(String columnName,List<E> value){
+		WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
+		condition.setListValue(true);
+		condition.setValue(value);
+		condition.setRelation("not in");//$NON-NLS-1$
+		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
+		this.whereConditions.add(condition);
+		return this;
+	}
+	
+	public <E> ConditionBuilder<T> notIn(String columnName,List<E> value,Predicate<List<E>> when){
+		if(when.test(value)) {
+			WhereConditionBuilder<T> condition=new WhereConditionBuilder<T>(super.getEntityClass());
+			condition.setListValue(true);
+			condition.setValue(value);
+			condition.setRelation("not in");//$NON-NLS-1$
 			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName));
 			this.whereConditions.add(condition);
 		}

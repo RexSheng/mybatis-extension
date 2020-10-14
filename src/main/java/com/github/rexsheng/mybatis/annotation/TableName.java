@@ -13,5 +13,31 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TableName {
 
+	/**
+	 * Alias for the {@link #table()} Attribute.
+	 * @return 表名
+	 */
 	String value() default "";
+	
+	/**
+	 * 表名
+	 * @return 表名
+	 * @since 1.1.2
+	 */
+	String table() default "";
+	
+	/**
+	 * schema
+	 * @return schema
+	 * @since 1.1.2
+	 */
+	String schema() default "";
+	
+	/**
+	 * catalog
+	 * @return catalog
+	 * @since 1.1.2
+	 */
+	String catalog() default "";
+	
 }
