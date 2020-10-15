@@ -14,7 +14,7 @@ mybatis扩展库，纯mybatis原生支持，可用于辅助mybatis-plus、tk-myb
 3. 支持GROUPBY/HAVING聚合查询
 4. 支持自定义sql查询
 5. 内置多种mybatis generator常用插件，例如批量新增、分页等
-6. 支持批量插入<font size="1">（since1.0.1）</font>
+6. 支持批量插入<font size="1">（since1.0.1）</font>，更新，删除<font size="1">（since1.1.2）</font>
 
 #### 使用说明（springboot示例)
 - 1. pom.xml中添加maven依赖包
@@ -81,15 +81,15 @@ public class MapperTest {
 	@Test
 	public void simpleJoin() {
 		//定义要查询的主表的构建器
-		TableQueryBuilder<TUser> userQuery=TableQueryBuilder.from(TUser.class);
-		//定义要查询的从表的构建器
 		TableQueryBuilder<UserRole> userRoleQuery=TableQueryBuilder.from(UserRole.class);
-		//定义要查询主表的所有字段，并且使用主表左关联从表，指定关联条件
-		userQuery.selectAll().leftJoin(userRoleQuery).on(TUser::getUserId, UserRole::getUserId);
+		//定义要查询的从表的构建器
+		TableQueryBuilder<TUser> userQuery=TableQueryBuilder.from(TUser.class);
 		//定义where中的条件
-		userQuery.where().like(TUser::getFirstName, "%管理员%").like(TUser::getLastName, "%管理员%");
+		userQuery.selectAll().or().like(TUser::getFirstName, "%管理员%").like(TUser::getLastName, "%管理员%");
+		//定义要查询主表的字段，指定关联条件
+		userRoleQuery.distinct().select(UserRole::getRoleId).innerJoin(userQuery).on(UserRole::getUserId, TUser::getUserId);		
 		//执行查询，定义新的返回类
-		List<UserRoleQueryDto> userList=dao.selectByBuilder(userQuery.build(UserRoleQueryDto.class));
+		List<UserRoleQueryDto> userList=dao.selectByBuilder(userRoleQuery.build(UserRoleQueryDto.class));
 		log.info("用户角色列表:{}",userList);
 	}
 }

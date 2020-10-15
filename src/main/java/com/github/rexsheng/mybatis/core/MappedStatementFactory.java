@@ -26,9 +26,17 @@ public class MappedStatementFactory {
         return changeMappedStatementResultType(ms,ms.getSqlSource(),resultType);
     }
 	
+	public static MappedStatement changeMappedStatementResultType(MappedStatement ms, Class<?> resultType,Boolean changeId) {
+        return changeMappedStatementResultType(ms,ms.getSqlSource(),resultType,changeId);
+    }
+	
 	public static MappedStatement changeMappedStatementResultType(MappedStatement ms,SqlSource sqlSource, Class<?> resultType) {
+        return changeMappedStatementResultType(ms, sqlSource,resultType,true);
+    }
+	
+	public static MappedStatement changeMappedStatementResultType(MappedStatement ms,SqlSource sqlSource, Class<?> resultType,Boolean changeId) {
         //下面是新建的过程，考虑效率和复用对象的情况下，这里最后生成的ms可以缓存起来，下次根据 ms.getId() + "_" + getShortName(resultType) 直接返回 ms,省去反复创建的过程
-        MappedStatement.Builder builder = new MappedStatement.Builder(ms.getConfiguration(), ms.getId() + "[" + getShortName(resultType) +"]", sqlSource, ms.getSqlCommandType());
+        MappedStatement.Builder builder = new MappedStatement.Builder(ms.getConfiguration(), ms.getId() + (changeId?("[" + getShortName(resultType) +"]"):""), sqlSource, ms.getSqlCommandType());
         builder.resource(ms.getResource());
         builder.fetchSize(ms.getFetchSize());
         builder.statementType(ms.getStatementType());

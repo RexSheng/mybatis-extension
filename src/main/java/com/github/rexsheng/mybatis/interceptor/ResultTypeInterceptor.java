@@ -178,14 +178,17 @@ public class ResultTypeInterceptor implements Interceptor{
 	    		Object parameterObject = args[1];
 			    //获取参数中设置的返回值类型
 	    		Class<?> resultType = null;
+	    		Boolean changeId=true;
 	    		if(methodName.equalsIgnoreCase("com.github.rexsheng.mybatis.mapper.DynamicMapper.selectBySqlWithParams")) {
 	    			resultType=getResultType(parameterObject,"clazz");
 	    		}
 	    		else if(methodName.equalsIgnoreCase("com.github.rexsheng.mybatis.mapper.DynamicMapper.selectByMapWithParams")) {
 	    			resultType=Map.class;
+	    			changeId=false;
 	    		}
 	    		else if(methodName.equalsIgnoreCase("com.github.rexsheng.mybatis.mapper.DynamicMapper.countBySqlWithParams")) {
 	    			resultType=long.class;
+	    			changeId=false;
 	    		}
 			    if(resultType == null){
 			        return invocation.proceed();
@@ -222,7 +225,7 @@ public class ResultTypeInterceptor implements Interceptor{
 						i++;
 					}
 				}
-	    		MappedStatement ms2=MappedStatementFactory.changeMappedStatementResultType(ms,new SonOfSqlSource(newBoundSql), resultType);
+	    		MappedStatement ms2=MappedStatementFactory.changeMappedStatementResultType(ms,new SonOfSqlSource(newBoundSql), resultType,changeId);
 				args[0] = ms2;
 	    	}
 	    	else if(methodName.contains("com.github.rexsheng.mybatis.mapper.DynamicMapper.insertBatch")) {//$NON-NLS-1$
