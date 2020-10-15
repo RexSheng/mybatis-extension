@@ -2,13 +2,11 @@ package com.github.rexsheng.mybatis.config;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
-import com.github.rexsheng.mybatis.annotation.ColumnName;
-import com.github.rexsheng.mybatis.annotation.TableName;
-import com.github.rexsheng.mybatis.core.SqlReservedWords;
-import com.github.rexsheng.mybatis.extension.ColumnQueryBuilder;
-import com.github.rexsheng.mybatis.util.StringUtils;
+import com.github.rexsheng.mybatis.handler.DefaultColumnHandler;
+import com.github.rexsheng.mybatis.handler.DefaultTableHandler;
+import com.github.rexsheng.mybatis.handler.IColumnHandler;
+import com.github.rexsheng.mybatis.handler.ITableHandler;
 
 /**
  * 全局配置
@@ -24,9 +22,9 @@ public class BuilderConfiguration {
 	
 	private int maxInLength;
 	
-	private Function<Class<?>,String> tableNameHandler;
+	private ITableHandler tableHandler;
 	
-	private Function<ColumnQueryBuilder<?>,String> columnNameHandler;
+	private IColumnHandler columnHandler;
 	
 	private final List<String> DB_TYPE_LIST= Arrays.asList("mysql","oracle","sqlserver");//$NON-NLS-1$
 
@@ -34,37 +32,9 @@ public class BuilderConfiguration {
 		this.beginDelimiter="";//$NON-NLS-1$
 		this.endDelimiter="";//$NON-NLS-1$
 		this.dbType="mysql";//$NON-NLS-1$
-		this.setMaxInLength(-1);
-		this.tableNameHandler=(clazz)->{
-			TableName tableName=clazz.getAnnotation(TableName.class);
-			if(tableName!=null) {
-				return composeFullyQualifiedTableName(tableName.catalog(),tableName.schema(),tableName.table(),tableName.value(),'.');
-			}
-			else {
-				return StringUtils.capitalToUnderLine(clazz.getSimpleName());
-			}
-		};
-		this.columnNameHandler=(query)->{
-			String col=null;
-			if(query.getField()!=null) {
-				ColumnName columnName=query.getField().getAnnotation(ColumnName.class);
-				if(columnName!=null) {
-					col=columnName.value();
-				}
-				else {
-					col=StringUtils.camelCaseToUnderLine(query.getFieldName());
-				}
-			}
-			else {
-				col=StringUtils.camelCaseToUnderLine(query.getFieldName());
-			}
-			if(SqlReservedWords.containsWord(col)) {
-				return getBeginDelimiter()+col+getEndDelimiter();
-			}
-			else {
-				return col;
-			}
-		};
+		this.maxInLength=-1;
+		this.tableHandler=new DefaultTableHandler();
+		this.columnHandler=new DefaultColumnHandler();
 	}
 
 	public String getBeginDelimiter() {
@@ -82,21 +52,21 @@ public class BuilderConfiguration {
 	public void setEndDelimiter(String endDelimiter) {
 		this.endDelimiter = endDelimiter;
 	}
-	
-	public Function<Class<?>,String> getTableNameHandler() {
-		return tableNameHandler;
+
+	public ITableHandler getTableHandler() {
+		return tableHandler;
 	}
 
-	public void setTableNameHandler(Function<Class<?>,String> tableNameHandler) {
-		this.tableNameHandler = tableNameHandler;
+	public void setTableHandler(ITableHandler tableHandler) {
+		this.tableHandler = tableHandler;
 	}
-	
-	public Function<ColumnQueryBuilder<?>, String> getColumnNameHandler() {
-		return columnNameHandler;
+
+	public IColumnHandler getColumnHandler() {
+		return columnHandler;
 	}
-	
-	public void setColumnNameHandler(Function<ColumnQueryBuilder<?>, String> columnNameHandler) {
-		this.columnNameHandler = columnNameHandler;
+
+	public void setColumnHandler(IColumnHandler columnHandler) {
+		this.columnHandler = columnHandler;
 	}
 
 	public String getDbType() {
@@ -110,37 +80,6 @@ public class BuilderConfiguration {
 	public void setMaxInLength(int maxInLength) {
 		this.maxInLength = maxInLength;
 	}
-	
-	public static String composeFullyQualifiedTableName(String catalog,
-            String schema, String tableName, String bakTableName, char separator) {
-        StringBuilder sb = new StringBuilder();
-
-        if (StringUtils.hasValue(catalog)) {
-            sb.append(catalog);
-            sb.append(separator);
-        }
-
-        if (StringUtils.hasValue(schema)) {
-            sb.append(schema);
-            sb.append(separator);
-        } else {
-            if (sb.length() > 0) {
-                sb.append(separator);
-            }
-        }
-
-        if (StringUtils.hasValue(tableName)) {
-            sb.append(tableName);
-        } 
-        else if (StringUtils.hasValue(bakTableName)) {
-        	sb.append(bakTableName);
-        }
-        else {
-        	throw new RuntimeException("必须指定表名");//$NON-NLS-1$
-        }
-
-        return sb.toString();
-    }
 
 	/**
 	 * 设置数据库类型，默认mysql,目前支持"mysql","oracle","sqlserver"三种

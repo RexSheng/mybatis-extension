@@ -48,7 +48,7 @@ public class WhereConditionBuilder<T> extends EntityInfo<T>{
 		this.value = value;
 		this.hasValue=true;
 	}
-
+	
 	public Boolean getIsValid() {
 		return isValid;
 	}

@@ -114,7 +114,7 @@ public class ColumnQueryBuilder<T> extends EntityInfo<T>{
 	
 	private String getActualColumnName(BuilderConfiguration configuration) {
 		if(inputColumnName==null) {
-			return configuration.getColumnNameHandler().apply(this);
+			return configuration.getColumnHandler().getName(this, configuration);
 		}
 		else {
 			return inputColumnName;

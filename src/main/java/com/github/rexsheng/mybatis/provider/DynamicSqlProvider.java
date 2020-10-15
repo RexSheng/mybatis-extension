@@ -748,12 +748,12 @@ public class DynamicSqlProvider {
 						if(i==0) {
 							Object element=dataList.get(i);
 							Class<?> clazz=element.getClass();
-							String tableName=config.getTableNameHandler().apply(element.getClass());
+							String tableName=config.getTableHandler().getName(element.getClass(),config);
 							INSERT_INTO(tableName);
 							Field[] fields=ReflectUtil.getDeclaredFields(clazz);
 							for(Field field:fields) {
 								ColumnQueryBuilder<?> colBuilder=new ColumnQueryBuilder<>(clazz,field);
-								String col=config.getColumnNameHandler().apply(colBuilder);
+								String col=config.getColumnHandler().getName(colBuilder,config);
 								INTO_COLUMNS(col);
 								fieldNames.add(field.getName());
 							}
@@ -1551,7 +1551,7 @@ public class DynamicSqlProvider {
 			return tableName;
 		}
 		else {
-			return configuration.getTableNameHandler().apply(builder.getEntityClass());
+			return configuration.getTableHandler().getName(builder.getEntityClass(),configuration);
 		}
 	}
 	

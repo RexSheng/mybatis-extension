@@ -100,7 +100,16 @@ public class MapperTest {
 3. 新增：selectByBuilder支持distinct
 4. 新增：where条件notIn,notLike
 5. 新增：BuilderConfiguration配置maxInLength，自动拆分列表值为or连接的条件，用于解决oracle中in最多1000个值的问题
-6. 优化：BuilderConfiguration中默认beginDelimiter和endDelimiter为空白字符串
+6. 新增：mbg 注释实现类ExtensionCommentGenerator
+        
+        <commentGenerator type="com.github.rexsheng.mybatis.plugin.ExtensionCommentGenerator">
+            <property name="suppressDate" value="true" />
+            <!-- 是否去除自动生成的注释 true：是 ： false:否 -->
+            <property name="suppressAllComments" value="false" />
+        </commentGenerator>
+        
+7. 优化：BuilderConfiguration中默认beginDelimiter和endDelimiter为空白字符串
+8. 优化：BuilderConfiguration中配置ITableHandler，IColumnHanler来获取数据表及列配置
 
 ##### v<font size="3">1.1.1</font>  date: <font size="3">2020/10/08</font>
 1. 新增：DynamicMapper接口sql传参方法selectBySqlWithParams，selectByMapWithParams。

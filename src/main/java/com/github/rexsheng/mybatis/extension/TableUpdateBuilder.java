@@ -44,21 +44,13 @@ public class TableUpdateBuilder<T> extends TableQueryBuilder<T> {
 	
 	public <E> TableUpdateBuilder<T> setValue(SFunction<T,E> field,E value,Predicate<E> when){
 		if(when.test(value)) {
-			WhereConditionBuilder<T> condition=new WhereConditionBuilder<>(super.getEntityClass());
-			condition.setValue(value);
-			condition.setRelation("=");//$NON-NLS-1$
-			condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(field)));
-			this.updateColumns.add(condition);
+			setValue(field,value);
 		}
 		return this;
 	}
 	
 	public <E> TableUpdateBuilder<T> setValueNull(SFunction<T,E> field){
-		WhereConditionBuilder<T> condition=new WhereConditionBuilder<>(super.getEntityClass());
-		condition.setRelation("IS NULL");//$NON-NLS-1$
-		condition.setColumn(new ColumnQueryBuilder<T>(super.getEntityClass(),ReflectUtil.fnToFieldName(field)));
-		this.updateColumns.add(condition);
-		return this;
+		return setValue(field,null);
 	}
 	
 	public List<WhereConditionBuilder<T>> getUpdateColumns() {

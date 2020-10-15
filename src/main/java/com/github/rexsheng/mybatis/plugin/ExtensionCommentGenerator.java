@@ -44,6 +44,8 @@ public class ExtensionCommentGenerator extends DefaultCommentGenerator{
 	    private boolean addRemarkComments;
 
 	    private SimpleDateFormat dateFormat;
+	    
+	    private SimpleDateFormat defaultDateFormat;
 
 	    public ExtensionCommentGenerator() {
 	        super();
@@ -51,6 +53,7 @@ public class ExtensionCommentGenerator extends DefaultCommentGenerator{
 	        suppressDate = false;
 	        suppressAllComments = false;
 	        addRemarkComments = false;
+	        defaultDateFormat=new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	    }
 
 	    @Override
@@ -127,7 +130,7 @@ public class ExtensionCommentGenerator extends DefaultCommentGenerator{
 	        } else if (dateFormat != null) {
 	            return dateFormat.format(new Date());
 	        } else {
-	            return new Date().toString();
+	            return defaultDateFormat.format(new Date());
 	        }
 	    }
 
@@ -174,14 +177,14 @@ public class ExtensionCommentGenerator extends DefaultCommentGenerator{
 	     */
 	    @Override
 	    public void addModelClassComment(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-	        if (suppressAllComments || !addRemarkComments) {
+	        if (suppressAllComments) {
 	            return;
 	        }
 
 	        topLevelClass.addJavaDocLine("/**"); //$NON-NLS-1$
 
 	        String remarks = introspectedTable.getRemarks();
-	        if (addRemarkComments && StringUtility.stringHasValue(remarks)) {
+	        if (StringUtility.stringHasValue(remarks)) {
 	            String[] remarkLines = remarks.split(System.getProperty("line.separator")); //$NON-NLS-1$
 	            for (String remarkLine : remarkLines) {
 	                topLevelClass.addJavaDocLine(" *   " + remarkLine); //$NON-NLS-1$
@@ -211,7 +214,7 @@ public class ExtensionCommentGenerator extends DefaultCommentGenerator{
 	        field.addJavaDocLine("/**"); //$NON-NLS-1$
 
 	        String remarks = introspectedColumn.getRemarks();
-	        if (addRemarkComments && StringUtility.stringHasValue(remarks)) {
+	        if (StringUtility.stringHasValue(remarks)) {
 	            String[] remarkLines = remarks.split(System.getProperty("line.separator")); //$NON-NLS-1$
 	            for (String remarkLine : remarkLines) {
 	                field.addJavaDocLine(" *   " + remarkLine); //$NON-NLS-1$
@@ -357,7 +360,7 @@ public class ExtensionCommentGenerator extends DefaultCommentGenerator{
 	        method.addJavaDocLine("/**"); //$NON-NLS-1$
 	        
 	        String remarks = introspectedColumn.getRemarks();
-	        if (addRemarkComments && StringUtility.stringHasValue(remarks)) {
+	        if (StringUtility.stringHasValue(remarks)) {
 	            String[] remarkLines = remarks.split(System.getProperty("line.separator")); //$NON-NLS-1$
 	            for (String remarkLine : remarkLines) {
 	            	method.addJavaDocLine(" * " + remarkLine); //$NON-NLS-1$
@@ -383,12 +386,10 @@ public class ExtensionCommentGenerator extends DefaultCommentGenerator{
 	            return;
 	        }
 
-	        
-
 	        method.addJavaDocLine("/**"); //$NON-NLS-1$
 
 	        String remarks = introspectedColumn.getRemarks();
-	        if (addRemarkComments && StringUtility.stringHasValue(remarks)) {
+	        if (StringUtility.stringHasValue(remarks)) {
 	            String[] remarkLines = remarks.split(System.getProperty("line.separator")); //$NON-NLS-1$
 	            for (String remarkLine : remarkLines) {
 	            	method.addJavaDocLine(" * " + remarkLine); //$NON-NLS-1$

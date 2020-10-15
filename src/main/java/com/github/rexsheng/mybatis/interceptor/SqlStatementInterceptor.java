@@ -43,11 +43,11 @@ public class SqlStatementInterceptor implements Interceptor{
         String sqlId = mappedStatement.getId();
         BoundSql boundSql=mappedStatement.getBoundSql(invocation.getArgs()[1]);
 //        logger.info("===>sql:"+SQLFormatterUtil.formatSql(boundSql.getSql()));
-        logger.info("===>sql:"+SQLFormatterUtil.formatSql(showSql(mappedStatement.getConfiguration(),boundSql)));
+        logger.debug("===>sql:"+SQLFormatterUtil.formatSql(showSql(mappedStatement.getConfiguration(),boundSql)));
         long start = System.currentTimeMillis();
         Object returnValue = invocation.proceed();
         long end = System.currentTimeMillis();
-        logger.info((properties.getProperty("prefix")!=null?properties.getProperty("prefix"):formatSqlId(sqlId))+":"+(end - start)+"ms");
+        logger.debug((properties.getProperty("prefix")!=null?properties.getProperty("prefix"):formatSqlId(sqlId))+":"+(end - start)+"ms");
         return returnValue;
         //修改sql
 //        ReflectUtil.setFieldValue(boundSql, "sql", sql);
