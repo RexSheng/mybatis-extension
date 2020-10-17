@@ -37,7 +37,7 @@ public class JoinConditionBuilder<L,R> extends EntityInfo<L>{
 	 * @param leftColumn 左表列
 	 * @param rightColumn 右表列
 	 * @return 当前条件
-	 * @since 1.1.2
+	 * @since 1.2.0
 	 */
 	public JoinConditionBuilder<L,R> setColumnValue(SFunction<L,Object> leftColumn,SFunction<R,Object> rightColumn){
 		ColumnQueryBuilder<L> left=new ColumnQueryBuilder<L>(super.getEntityClass(),ReflectUtil.fnToFieldName(leftColumn));

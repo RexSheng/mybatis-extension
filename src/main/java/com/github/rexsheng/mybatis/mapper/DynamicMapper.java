@@ -43,7 +43,7 @@ public interface DynamicMapper {
 	 * 根据传入的sql查询总条数
 	 * @param sql 计算总条数的sql
 	 * @return sql结果
-	 * @since 1.1.2
+	 * @since 1.2.0
 	 */
 	@SelectProvider(type = DynamicSqlProvider.class,method = "selectBySql")
 	long countBySql(String sql);
@@ -78,7 +78,7 @@ public interface DynamicMapper {
 	 * @param sql 计算总条数的sql
 	 * @param params 参数
 	 * @return sql结果
-	 * @since 1.1.2
+	 * @since 1.2.0
 	 */
 	@SelectProvider(type = DynamicSqlProvider.class,method = "selectBySqlWithParams")
 	long countBySqlWithParams(@Param("sql") String sql,@Param("params") Map<String,Object> params);
@@ -130,7 +130,7 @@ public interface DynamicMapper {
 	 * @param <T> 数据类型
 	 * @param builder 构造条件
 	 * @return 影响的行数
-	 * @since 1.1.2
+	 * @since 1.2.0
 	 */
 	@UpdateProvider(type = DynamicSqlProvider.class,method = "updateByBuilder")
 	<T> int updateByBuilder(QueryBuilder<T> builder);
@@ -140,7 +140,7 @@ public interface DynamicMapper {
 	 * @param <T> 数据类型
 	 * @param builder 构造条件
 	 * @return 影响的行数
-	 * @since 1.1.2
+	 * @since 1.2.0
 	 */
 	@DeleteProvider(type = DynamicSqlProvider.class,method = "deleteByBuilder")
 	<T> int deleteByBuilder(QueryBuilder<T> builder);

@@ -70,7 +70,7 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	/**
 	 * distinct
 	 * @return Boolean
-	 * @since 1.1.2
+	 * @since 1.2.0
 	 */
 	public TableQueryBuilder<T> distinct() {
 		this.distinct = true;
@@ -489,7 +489,7 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	}
 	
 	/**
-	 * @since 1.1.2
+	 * @since 1.2.0
 	 */
 	public Integer getStartIndex() {
 		if(skipSize!=null) {
@@ -504,7 +504,7 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	}
 	
 	/**
-	 * @since 1.1.2
+	 * @since 1.2.0
 	 */
 	public Integer getEndIndex() {
 		if(pageSize!=null) {

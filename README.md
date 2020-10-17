@@ -14,7 +14,7 @@ mybatis扩展库，纯mybatis原生支持，可用于辅助mybatis-plus、tk-myb
 3. 支持GROUPBY/HAVING聚合查询
 4. 支持自定义sql查询
 5. 内置多种mybatis generator常用插件，例如批量新增、分页等
-6. 支持批量插入<font size="1">（since1.0.1）</font>，更新，删除<font size="1">（since1.1.2）</font>
+6. 支持批量插入<font size="1">（since1.0.1）</font>，更新，删除<font size="1">（since1.2.0）</font>
 
 #### 使用说明（springboot示例)
 - 1. pom.xml中添加maven依赖包
@@ -24,7 +24,7 @@ mybatis扩展库，纯mybatis原生支持，可用于辅助mybatis-plus、tk-myb
 <dependency>
     <groupId>com.github.rexsheng</groupId>
     <artifactId>mybatis-extension</artifactId>
-    <version>1.1.2</version>
+    <version>1.2.0</version>
 </dependency>
 
 ```
@@ -94,13 +94,14 @@ public class MapperTest {
 	}
 }
 ```
-##### v<font size="3">1.1.2</font>  date: <font size="3">2020/10/17</font>
+##### v<font size="3">1.2.0</font>  date: <font size="3">2020/10/17</font>
 1. 新增：DynamicMapper批量更新方法updateByBuilder，批量删除方法deleteByBuilder，查询总条数方法countBySql、countBySqlWithParams
-2. 新增：tablename注解新增catalog,schema配置，TableColumnNamePlugin插件更新
-3. 新增：selectByBuilder支持distinct
-4. 新增：where条件notIn,notLike
-5. 新增：BuilderConfiguration配置maxInLength，自动拆分列表值为or连接的条件，用于解决oracle中in最多1000个值的问题
-6. 新增：mbg 注释实现类ExtensionCommentGenerator
+2. 新增：tablename注解新增catalog,schema配置
+3. TableColumnNamePlugin新增catalog,schema配置，支持传入属性：注解位置type=ALL/TABLE/COLUMN,备注类型remark=ALL,NONE,FIELD,METHOD
+4. 新增：selectByBuilder支持distinct
+5. 新增：where条件notIn,notLike
+6. 新增：BuilderConfiguration配置maxInLength，自动拆分列表值为or连接的条件，用于解决oracle中in最多1000个值的问题
+7. 新增：mbg 注释实现类ExtensionCommentGenerator
         
         <commentGenerator type="com.github.rexsheng.mybatis.plugin.ExtensionCommentGenerator">
             <property name="suppressDate" value="true" />
@@ -108,8 +109,9 @@ public class MapperTest {
             <property name="suppressAllComments" value="false" />
         </commentGenerator>
         
-7. 优化：BuilderConfiguration中默认beginDelimiter和endDelimiter为空白字符串
-8. 优化：BuilderConfiguration中配置ITableHandler，IColumnHanler来获取数据表及列配置
+8. 优化：BuilderConfiguration中默认beginDelimiter和endDelimiter为空白字符串
+9. 优化：BuilderConfiguration中配置ITableHandler，IColumnHanler来获取数据表及列配置
+10. 优化：支持sqlserver2012以上使用offset fetch next分页
 
 ##### v<font size="3">1.1.1</font>  date: <font size="3">2020/10/08</font>
 1. 新增：DynamicMapper接口sql传参方法selectBySqlWithParams，selectByMapWithParams。

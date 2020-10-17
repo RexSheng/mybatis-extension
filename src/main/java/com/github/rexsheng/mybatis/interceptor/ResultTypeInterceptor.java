@@ -135,6 +135,7 @@ public class ResultTypeInterceptor implements Interceptor{
 							newParamterMappings.add(createNewParameterMapping(ms,"table.skipSize",java.lang.Integer.class));//$NON-NLS-1$
 						}
 						break;
+						 
 			    	case "oracle"://$NON-NLS-1$
 						if(queryBuilder.getTable().getEndIndex()!=null) {
 							additionalSql="SELECT tt.*,ROWNUM AS _rowno from ("+additionalSql+") tt where ROWNUM<= ? ";//$NON-NLS-1$
@@ -143,6 +144,19 @@ public class ResultTypeInterceptor implements Interceptor{
 						if(queryBuilder.getTable().getStartIndex()!=null) {
 							additionalSql="select * from ("+additionalSql+") t where t._rowno> ?";//$NON-NLS-1$
 							newParamterMappings.add(createNewParameterMapping(ms,"table.startIndex",java.lang.Integer.class));//$NON-NLS-1$
+						}
+						break;
+			    	case "sqlserver"://$NON-NLS-1$
+			    		if(queryBuilder.getTable().getSkipSize()!=null) {
+							additionalSql+=" OFFSET ? ROWS";//$NON-NLS-1$
+							newParamterMappings.add(createNewParameterMapping(ms,"table.skipSize",java.lang.Integer.class));//$NON-NLS-1$
+						}
+			    		else {
+			    			additionalSql+=" OFFSET 0 ROWS";//$NON-NLS-1$
+			    		}
+						if(queryBuilder.getTable().getPageSize()!=null) {
+							additionalSql+=" FETCH NEXT ? ROWS ONLY";//$NON-NLS-1$
+							newParamterMappings.add(createNewParameterMapping(ms,"table.pageSize",java.lang.Integer.class));//$NON-NLS-1$
 						}
 						break;
 					default:

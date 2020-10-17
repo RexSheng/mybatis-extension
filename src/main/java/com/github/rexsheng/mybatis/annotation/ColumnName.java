@@ -6,12 +6,24 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 表字段信息
  * @author RexSheng
- * 2020年8月28日 下午11:58:15
+ * 2020年8月29日 下午11:58:15
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ColumnName {
 
+	/**
+	 * 列名
+	 * @return 列名
+	 */
 	String value() default "";
+	
+	/**
+	 * 字段备注
+	 * @return 字段备注
+	 * @since 1.2.0
+	 */
+	String desc() default "";
 }
