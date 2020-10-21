@@ -105,13 +105,13 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 		return this;
 	}
 	
-	public TableQueryBuilder<T> select(String... columnNames) {
-		for(String columnName:columnNames) {
-			ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName);
-			this.selectColumns.add(columnQuery);
-		}
-		return this;
-	}
+//	public TableQueryBuilder<T> select(String... columnNames) {
+//		for(String columnName:columnNames) {
+//			ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),null,null,columnName);
+//			this.selectColumns.add(columnQuery);
+//		}
+//		return this;
+//	}
 	
 	public TableQueryBuilder<T> selectAs(SFunction<T,Object> field,String aliasName) {
 		String fieldName=ReflectUtil.fnToFieldName(field);
@@ -121,7 +121,7 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	}
 	
 	public TableQueryBuilder<T> selectAs(String columnName,String aliasName) {
-		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),aliasName,columnName);
+		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),null,aliasName,columnName);
 		this.selectColumns.add(columnQuery);
 		return this;
 	}
@@ -136,7 +136,7 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	}
 	
 	public TableQueryBuilder<T> selectSum(String columnName,String aliasName) {
-		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),aliasName,columnName);
+		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),null,aliasName,columnName);
 		columnQuery.setPrefix("SUM(");//$NON-NLS-1$
 		columnQuery.setSuffix(")");//$NON-NLS-1$
 		this.selectColumns.add(columnQuery);
@@ -153,7 +153,7 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	}
 	
 	public TableQueryBuilder<T> selectCount(String columnName,String aliasName) {
-		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),aliasName,columnName);
+		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),null,aliasName,columnName);
 		columnQuery.setPrefix("COUNT(");//$NON-NLS-1$
 		columnQuery.setSuffix(")");//$NON-NLS-1$
 		this.selectColumns.add(columnQuery);
@@ -170,7 +170,7 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	}
 	
 	public TableQueryBuilder<T> selectMax(String columnName,String aliasName) {
-		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),aliasName,columnName);
+		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),null,aliasName,columnName);
 		columnQuery.setPrefix("MAX(");//$NON-NLS-1$
 		columnQuery.setSuffix(")");//$NON-NLS-1$
 		this.selectColumns.add(columnQuery);
@@ -187,7 +187,7 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	}
 	
 	public TableQueryBuilder<T> selectMin(String columnName,String aliasName) {
-		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),aliasName,columnName);
+		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),null,aliasName,columnName);
 		columnQuery.setPrefix("MIN(");//$NON-NLS-1$
 		columnQuery.setSuffix(")");//$NON-NLS-1$
 		this.selectColumns.add(columnQuery);
@@ -202,7 +202,7 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	}
 	
 	public TableQueryBuilder<T> groupBy(String columnName) {
-		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),StringUtils.underlineToCamelCase(columnName),null,columnName);
+		ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),null,null,columnName);
 		this.groupByColumns.add(columnQuery);
 		return this;
 	}

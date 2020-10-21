@@ -41,6 +41,7 @@ public class DynamicSqlProvider {
 			BuilderConfiguration configuration=builder.getBuiderConfig();
 			TableQueryBuilder<?> sourceTable=builder.getTable();
 			Boolean singleTable=sourceTable.getJoinList().isEmpty();
+			Boolean doSelect=false;
 			for(ColumnQueryBuilder<?> column:sourceTable.getSelectColumns()) {
 				if(singleTable) {
 					if(sourceTable.getDistinct()) {
@@ -58,6 +59,7 @@ public class DynamicSqlProvider {
 						SELECT(column.buildSql(configuration,getTableAlias(column.getEntityClass())));
 					}
 				}
+				doSelect=true;
 			}
 			for(ColumnQueryBuilder<?> column:sourceTable.getGroupByColumns()) {
 				if(singleTable) {
@@ -98,6 +100,7 @@ public class DynamicSqlProvider {
 					else {
 						SELECT(column.buildSql(configuration,getTableAlias(column.getEntityClass())));
 					}
+					doSelect=true;
 				}
 				for(ColumnQueryBuilder<?> column:entry.getTable().getGroupByColumns()) {
 					GROUP_BY(column.buildSqlNoAs(configuration,getTableAlias(column.getEntityClass())));
@@ -160,6 +163,7 @@ public class DynamicSqlProvider {
 					else {
 						SELECT(column.buildSql(configuration,getTableAlias(column.getEntityClass())));
 					}
+					doSelect=true;
 				}
 				for(ColumnQueryBuilder<?> column:entry.getTable().getGroupByColumns()) {
 					GROUP_BY(column.buildSqlNoAs(configuration,getTableAlias(column.getEntityClass())));
@@ -690,6 +694,9 @@ public class DynamicSqlProvider {
 //			if(sourceTable.getSkipSize()!=null) {
 //				OFFSET("#{table.skipSize}");
 //			}
+			if(!doSelect) {
+				throw new RuntimeException("select必须指定列");
+			}
             
         }}.toString();
 	}

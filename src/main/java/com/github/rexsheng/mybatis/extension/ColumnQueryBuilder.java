@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.regex.Pattern;
 
 import com.github.rexsheng.mybatis.config.BuilderConfiguration;
+import com.github.rexsheng.mybatis.core.SqlReservedWords;
 import com.github.rexsheng.mybatis.util.ReflectUtil;
 
 /**
@@ -13,7 +14,7 @@ public class ColumnQueryBuilder<T> extends EntityInfo<T>{
 	
 	private String inputColumnName;
 	
-	private String columnName;
+	private String aliasName;
 	
 	private String fieldName;
 	
@@ -29,23 +30,28 @@ public class ColumnQueryBuilder<T> extends EntityInfo<T>{
 		this(clazz,fieldName,null);
 	}
 	
-	public ColumnQueryBuilder(Class<T> clazz,String fieldName,String columnName) {
-		this(clazz,fieldName,columnName,null);
+	public ColumnQueryBuilder(Class<T> clazz,String fieldName,String aliasName) {
+		this(clazz,fieldName,aliasName,null);
 	}
 	
-	public ColumnQueryBuilder(Class<T> clazz,String fieldName,String columnName,String inputColumnName) {
+	public ColumnQueryBuilder(Class<T> clazz,String fieldName,String aliasName,String inputColumnName) {
 		super(clazz);
 		this.fieldName=fieldName;
-		this.columnName=columnName;
+		this.aliasName=aliasName;
 		this.inputColumnName=inputColumnName;
 		this.prefix="";
 		this.suffix="";
-		if("*".equals(fieldName) || Pattern.compile("[0-9]*").matcher(fieldName).matches()) {//$NON-NLS-1$
-			this.supportAlias=false;
+		if(fieldName!=null) {
+			if("*".equals(fieldName) || Pattern.compile("[0-9]*").matcher(fieldName).matches()) {//$NON-NLS-1$
+				this.supportAlias=false;
+			}
+			else {
+				this.supportAlias=true;
+				this.field=ReflectUtil.getClassField(clazz, fieldName);
+			}
 		}
 		else {
 			this.supportAlias=true;
-			this.field=ReflectUtil.getClassField(clazz, fieldName);
 		}
 	}
 	
@@ -61,11 +67,17 @@ public class ColumnQueryBuilder<T> extends EntityInfo<T>{
 	}
 	 
 
-	public String getColumnName() {
-		if(columnName==null) {
-			return getFieldName();
+	public String getAliasName(BuilderConfiguration configuration) {
+		if(aliasName==null) {
+			String fieldName=getFieldName();
+			if(SqlReservedWords.containsWord(fieldName)) {
+				return configuration.getBeginDelimiter()+fieldName+configuration.getEndDelimiter();
+			}
+			else {
+				return fieldName;
+			}
 		}
-		return columnName;
+		return aliasName;
 	}
 
 	public String getFieldName() {
@@ -73,11 +85,11 @@ public class ColumnQueryBuilder<T> extends EntityInfo<T>{
 	}
 	
 	public String buildSql(BuilderConfiguration configuration) {
-		return this.prefix+getActualColumnName(configuration)+this.suffix+" AS "+this.getColumnName();//$NON-NLS-1$
+		return this.prefix+getActualColumnName(configuration)+this.suffix+" AS "+this.getAliasName(configuration);//$NON-NLS-1$
 	}
 	
 	public String buildSql(BuilderConfiguration configuration,String tableAlias) {
-		return this.prefix+(supportAlias?(tableAlias+"."):"")+getActualColumnName(configuration)+this.suffix+" AS "+this.getColumnName();//$NON-NLS-1$
+		return this.prefix+(supportAlias?(tableAlias+"."):"")+getActualColumnName(configuration)+this.suffix+" AS "+this.getAliasName(configuration);//$NON-NLS-1$
 	}
 	
 	public String buildSqlNoAs(BuilderConfiguration configuration) {

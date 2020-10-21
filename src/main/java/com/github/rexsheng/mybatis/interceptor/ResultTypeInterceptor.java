@@ -147,14 +147,14 @@ public class ResultTypeInterceptor implements Interceptor{
 						}
 						break;
 			    	case "sqlserver"://$NON-NLS-1$
-			    		if(queryBuilder.getTable().getSkipSize()!=null) {
-							additionalSql+=" OFFSET ? ROWS";//$NON-NLS-1$
-							newParamterMappings.add(createNewParameterMapping(ms,"table.skipSize",java.lang.Integer.class));//$NON-NLS-1$
-						}
-			    		else {
-			    			additionalSql+=" OFFSET 0 ROWS";//$NON-NLS-1$
-			    		}
 						if(queryBuilder.getTable().getPageSize()!=null) {
+							if(queryBuilder.getTable().getSkipSize()!=null) {
+								additionalSql+=" OFFSET ? ROWS";//$NON-NLS-1$
+								newParamterMappings.add(createNewParameterMapping(ms,"table.skipSize",java.lang.Integer.class));//$NON-NLS-1$
+							}
+				    		else {
+				    			additionalSql+=" OFFSET 0 ROWS";//$NON-NLS-1$
+				    		}
 							additionalSql+=" FETCH NEXT ? ROWS ONLY";//$NON-NLS-1$
 							newParamterMappings.add(createNewParameterMapping(ms,"table.pageSize",java.lang.Integer.class));//$NON-NLS-1$
 						}

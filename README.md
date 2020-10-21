@@ -24,7 +24,7 @@ mybatis扩展库，纯mybatis原生支持，可用于辅助mybatis-plus、tk-myb
 <dependency>
     <groupId>com.github.rexsheng</groupId>
     <artifactId>mybatis-extension</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
 </dependency>
 
 ```
@@ -94,6 +94,12 @@ public class MapperTest {
 	}
 }
 ```
+
+##### v<font size="3">1.2.1</font>  date: <font size="3">2020/10/20</font>
+1. bug：修改sqlserver查询时强制分页问题
+2. bug：修改查询时select使用as关键字问题
+3. 优化：selectByBuilder无select列时抛出异常
+
 ##### v<font size="3">1.2.0</font>  date: <font size="3">2020/10/17</font>
 1. 新增：DynamicMapper批量更新方法updateByBuilder，批量删除方法deleteByBuilder，查询总条数方法countBySql、countBySqlWithParams
 2. 新增：tablename注解新增catalog,schema配置
