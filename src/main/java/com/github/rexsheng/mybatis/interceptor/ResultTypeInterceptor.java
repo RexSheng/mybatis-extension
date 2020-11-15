@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import com.github.rexsheng.mybatis.config.BuilderConfiguration;
 import com.github.rexsheng.mybatis.core.MappedStatementFactory;
+import com.github.rexsheng.mybatis.mapper.DynamicMapper;
 
 /**
  * @author RexSheng
@@ -55,13 +56,14 @@ import com.github.rexsheng.mybatis.core.MappedStatementFactory;
 		            MappedStatement.class, 
 		            Object.class
 		        }
-		    ),
-//		@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})
+		    )
 }
 )
 public class ResultTypeInterceptor implements Interceptor{
 
-	private Logger logger=LoggerFactory.getLogger(ResultTypeInterceptor.class); 
+	private final static Logger logger=LoggerFactory.getLogger(ResultTypeInterceptor.class);
+	
+	private final static Logger mapperLogger=LoggerFactory.getLogger(DynamicMapper.class); 
 	
 	private BuilderConfiguration builderConfig=new BuilderConfiguration();
 	
@@ -80,12 +82,13 @@ public class ResultTypeInterceptor implements Interceptor{
             	Boolean ifCalculateTotal=queryBuilder.getTable().getTotalCountEnabled();
             	BoundSql boundSql = ms.getSqlSource().getBoundSql(parameterObject);
             	if(ifCalculateTotal) {
-            		String countSql="select count(*) from ("+boundSql.getSql()+") a";//$NON-NLS-1$
+            		String countSql="select count(*) from ("+boundSql.getSql()+") a";//$NON-NLS-1$            		
                 	Connection conn =ms.getConfiguration().getEnvironment().getDataSource().getConnection();
                 	PreparedStatement countStatement = null;
                 	ResultSet rs=null;
                     long totalItemCount = 0;
                     try {
+                    	mapperLogger.debug("==> TotalCount SQL:{}",countSql);
                     	//预编译统计总记录数的sql
                     	countStatement = conn.prepareStatement(countSql);
                     	
@@ -95,12 +98,12 @@ public class ResultTypeInterceptor implements Interceptor{
         				//当sql带有参数时，下面的这句话就是获取查询条件的参数 
         				DefaultParameterHandler parameterHandler = new DefaultParameterHandler(ms,params,countBs);
         				//经过set方法，就可以正确的执行sql语句  
-        				parameterHandler.setParameters(countStatement);  
+        				parameterHandler.setParameters(countStatement);
                         //执行查询语句
                         rs = countStatement.executeQuery();
                         while (rs.next()) {	                    	
                         	totalItemCount = rs.getInt(1);
-                        	logger.debug("count result:{},sql:{}",totalItemCount,countSql);
+                        	mapperLogger.debug("<== TotalCount Result:{}",totalItemCount);
                         }
                     } catch (SQLException e) {
                         e.printStackTrace();
@@ -135,14 +138,13 @@ public class ResultTypeInterceptor implements Interceptor{
 							newParamterMappings.add(createNewParameterMapping(ms,"table.skipSize",java.lang.Integer.class));//$NON-NLS-1$
 						}
 						break;
-						 
 			    	case "oracle"://$NON-NLS-1$
 						if(queryBuilder.getTable().getEndIndex()!=null) {
-							additionalSql="SELECT tt.*,ROWNUM AS _rowno from ("+additionalSql+") tt where ROWNUM<= ? ";//$NON-NLS-1$
+							additionalSql="SELECT tt.*,ROWNUM AS _rowno FROM ("+additionalSql+") tt WHERE ROWNUM<= ? ";//$NON-NLS-1$
 							newParamterMappings.add(createNewParameterMapping(ms,"table.endIndex",java.lang.Integer.class));//$NON-NLS-1$							
 						}
 						if(queryBuilder.getTable().getStartIndex()!=null) {
-							additionalSql="select * from ("+additionalSql+") t where t._rowno> ?";//$NON-NLS-1$
+							additionalSql="SELECT * FROM ("+additionalSql+") t WHERE t._rowno> ?";//$NON-NLS-1$
 							newParamterMappings.add(createNewParameterMapping(ms,"table.startIndex",java.lang.Integer.class));//$NON-NLS-1$
 						}
 						break;
@@ -192,17 +194,14 @@ public class ResultTypeInterceptor implements Interceptor{
 	    		Object parameterObject = args[1];
 			    //获取参数中设置的返回值类型
 	    		Class<?> resultType = null;
-	    		Boolean changeId=true;
 	    		if(methodName.equalsIgnoreCase("com.github.rexsheng.mybatis.mapper.DynamicMapper.selectBySqlWithParams")) {
 	    			resultType=getResultType(parameterObject,"clazz");
 	    		}
 	    		else if(methodName.equalsIgnoreCase("com.github.rexsheng.mybatis.mapper.DynamicMapper.selectByMapWithParams")) {
 	    			resultType=Map.class;
-	    			changeId=false;
 	    		}
 	    		else if(methodName.equalsIgnoreCase("com.github.rexsheng.mybatis.mapper.DynamicMapper.countBySqlWithParams")) {
 	    			resultType=long.class;
-	    			changeId=false;
 	    		}
 			    if(resultType == null){
 			        return invocation.proceed();
@@ -239,7 +238,7 @@ public class ResultTypeInterceptor implements Interceptor{
 						i++;
 					}
 				}
-	    		MappedStatement ms2=MappedStatementFactory.changeMappedStatementResultType(ms,new SonOfSqlSource(newBoundSql), resultType,changeId);
+	    		MappedStatement ms2=MappedStatementFactory.changeMappedStatementResultType(ms,new SonOfSqlSource(newBoundSql), resultType);
 				args[0] = ms2;
 	    	}
 	    	else if(methodName.contains("com.github.rexsheng.mybatis.mapper.DynamicMapper.insertBatch")) {//$NON-NLS-1$

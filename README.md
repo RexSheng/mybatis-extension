@@ -24,7 +24,7 @@ mybatis扩展库，纯mybatis原生支持，可用于辅助mybatis-plus、tk-myb
 <dependency>
     <groupId>com.github.rexsheng</groupId>
     <artifactId>mybatis-extension</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
 </dependency>
 
 ```
@@ -94,10 +94,14 @@ public class MapperTest {
 	}
 }
 ```
+##### v<font size="3">1.2.2</font>  date: <font size="3">2020/11/15</font>
+1. 优化：增强多字段的查询方法selectField,selectExcept
+2. 优化：精简生成的查询sql：当返回类型的属性与sql字段相同时，取消语句中的字段AS部分
+3. 修复：多表关联 selectCount(*)时异常问题
 
 ##### v<font size="3">1.2.1</font>  date: <font size="3">2020/10/20</font>
-1. bug：修改sqlserver查询时强制分页问题
-2. bug：修改查询时select使用as关键字问题
+1. 修复：修改sqlserver查询时强制分页问题
+2. 修复：修改查询时select使用as关键字问题
 3. 优化：selectByBuilder无select列时抛出异常
 
 ##### v<font size="3">1.2.0</font>  date: <font size="3">2020/10/17</font>
@@ -128,7 +132,7 @@ public class MapperTest {
 1. 新增：TableQueryBuilder类新增设置分页方法setPage,新增开启计算总条数方法totalCountEnabled()
 2. 新增：mbg分页插件，支持传入page参数，支持只设置pageSize，pageIndex改为非必须
 3. 新增：BuilderConfiguration中配置dbType，默认值为"mysql"
-4. bug：批量插入方法不使用配置方法获取列名的问题
+4. 修复：批量插入方法不使用配置方法获取列名的问题
 5. 优化：调整部分注释
 
 ##### v<font size="3">1.0.1</font>  date: <font size="3">2020/09/28</font>

@@ -51,7 +51,13 @@ public class ColumnQueryBuilder<T> extends EntityInfo<T>{
 			}
 		}
 		else {
-			this.supportAlias=true;
+			if(inputColumnName!=null && ("*".equals(inputColumnName) || Pattern.compile("[0-9]*").matcher(inputColumnName).matches())) {//$NON-NLS-1$
+				this.supportAlias=false;
+			}
+			else {
+				this.supportAlias=true;
+			}
+			
 		}
 	}
 	
@@ -85,11 +91,25 @@ public class ColumnQueryBuilder<T> extends EntityInfo<T>{
 	}
 	
 	public String buildSql(BuilderConfiguration configuration) {
-		return this.prefix+getActualColumnName(configuration)+this.suffix+" AS "+this.getAliasName(configuration);//$NON-NLS-1$
+		String actualName=this.prefix+getActualColumnName(configuration)+this.suffix;
+		String aliasName=getAliasName(configuration);
+		if(actualName.equals(aliasName)) {
+			return actualName;
+		}
+		else {
+			return actualName+" AS "+aliasName;//$NON-NLS-1$
+		}		
 	}
 	
 	public String buildSql(BuilderConfiguration configuration,String tableAlias) {
-		return this.prefix+(supportAlias?(tableAlias+"."):"")+getActualColumnName(configuration)+this.suffix+" AS "+this.getAliasName(configuration);//$NON-NLS-1$
+		String actualName=getActualColumnName(configuration);
+		String aliasName=getAliasName(configuration);
+		if((this.prefix+actualName+this.suffix).equals(aliasName)) {
+			return this.prefix+(supportAlias?(tableAlias+"."):"")+actualName+this.suffix;//$NON-NLS-1$
+		}
+		else {
+			return this.prefix+(supportAlias?(tableAlias+"."):"")+actualName+this.suffix+" AS "+aliasName;//$NON-NLS-1$
+		}		
 	}
 	
 	public String buildSqlNoAs(BuilderConfiguration configuration) {

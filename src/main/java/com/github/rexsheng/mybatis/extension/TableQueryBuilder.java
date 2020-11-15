@@ -86,9 +86,40 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 		return this;
 	}
 	
+	/**
+	 * 查询满足条件的字段
+	 * same as {@link TableQueryBuilder#selectField(Predicate)}}
+	 * @param filter 满足的条件
+	 * @return 当前条件
+	 */
 	public TableQueryBuilder<T> select(Predicate<Field> filter) {
+		return selectField(filter);
+	}
+	
+	/**
+	 * 查询满足条件的字段
+	 * @param filter 满足的条件
+	 * @return 当前条件
+	 * @since 1.2.2
+	 */
+	public TableQueryBuilder<T> selectField(Predicate<Field> filter) {
 		Field[] fields=ReflectUtil.getDeclaredFields(super.getEntityClass());
 		Arrays.asList(fields).stream().filter(filter).forEach(field->{
+			ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),field.getName());
+			this.selectColumns.add(columnQuery);
+		});
+		return this;
+	}
+	
+	/**
+	 * 查询不满足条件的字段
+	 * @param filter 要排除的字段满足的条件
+	 * @return 当前条件
+	 * @since 1.2.2
+	 */
+	public TableQueryBuilder<T> selectExcept(Predicate<Field> filter) {
+		Field[] fields=ReflectUtil.getDeclaredFields(super.getEntityClass());
+		Arrays.asList(fields).stream().filter(a->!filter.test(a)).forEach(field->{
 			ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),field.getName());
 			this.selectColumns.add(columnQuery);
 		});
@@ -489,6 +520,8 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	}
 	
 	/**
+	 * 获取开始序号
+	 * @return 开始序号
 	 * @since 1.2.0
 	 */
 	public Integer getStartIndex() {
@@ -504,6 +537,8 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	}
 	
 	/**
+	 * 获取截止序号
+	 * @return 截止序号
 	 * @since 1.2.0
 	 */
 	public Integer getEndIndex() {
