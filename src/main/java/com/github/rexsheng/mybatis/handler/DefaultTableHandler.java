@@ -22,7 +22,7 @@ public class DefaultTableHandler implements ITableHandler{
 		}
 	}
 	
-	public String composeFullyQualifiedTableName(String catalog,
+	protected String composeFullyQualifiedTableName(String catalog,
             String schema, String tableName, String bakTableName, char separator) {
         StringBuilder sb = new StringBuilder();
 

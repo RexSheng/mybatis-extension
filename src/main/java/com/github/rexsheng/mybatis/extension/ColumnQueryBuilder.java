@@ -77,7 +77,7 @@ public class ColumnQueryBuilder<T> extends EntityInfo<T>{
 		if(aliasName==null) {
 			String fieldName=getFieldName();
 			if(SqlReservedWords.containsWord(fieldName)) {
-				return configuration.getBeginDelimiter()+fieldName+configuration.getEndDelimiter();
+				return configuration.getDatabaseDialect().getProperty().getBeginDelimiter()+fieldName+configuration.getDatabaseDialect().getProperty().getEndDelimiter();
 			}
 			else {
 				return fieldName;

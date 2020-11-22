@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import com.github.rexsheng.mybatis.config.IDatabaseDialect;
 import com.github.rexsheng.mybatis.core.IPageInput;
 import com.github.rexsheng.mybatis.core.SFunction;
 import com.github.rexsheng.mybatis.util.ReflectUtil;
@@ -41,7 +42,9 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	private Boolean calculateTotalCount;
 	
 	private Boolean distinct;
-		
+	
+	private Boolean temporarySkipSelectIfCountZero;
+			
 	public static <T> TableQueryBuilder<T> from(Class<T> clazz){
 		return new TableQueryBuilder<T>(clazz);
 	}
@@ -604,10 +607,27 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 		this.calculateTotalCount = true;
 		return this;
 	}
+	
+	/**
+	 * 允许在查询过程中同时计算影响的总行数
+	 * @param skipSelectIfCountZero 是否在总行数为0时，继续执行原有查询，忽略全局配置{@link IDatabaseDialect#skipSelectIfCountZero()}
+	 * @return 当前条件
+	 * @since 1.3.0
+	 */
+	public TableQueryBuilder<T> totalCountEnabled(Boolean skipSelectIfCountZero) {
+		this.calculateTotalCount = true;
+		this.temporarySkipSelectIfCountZero=skipSelectIfCountZero;
+		return this;
+	}
 
 	public Boolean getDistinct() {
 		return distinct;
 	}
+
+	public Boolean getTemporarySkipSelectIfCountZero() {
+		return temporarySkipSelectIfCountZero;
+	}
+
 
 	public static class JoinTableConditionInternal<L,R>{
 		

@@ -1,14 +1,18 @@
 package com.github.rexsheng.mybatis.interceptor;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,6 +27,7 @@ import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.plugin.Plugin;
 import org.apache.ibatis.plugin.Signature;
+import org.apache.ibatis.reflection.ArrayUtil;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.scripting.defaults.DefaultParameterHandler;
@@ -80,19 +85,41 @@ public class ResultTypeInterceptor implements Interceptor{
 	    		com.github.rexsheng.mybatis.extension.QueryBuilder<?> queryBuilder=(com.github.rexsheng.mybatis.extension.QueryBuilder<?>)parameterObject;
             	queryBuilder.setBuiderConfig(builderConfig);
             	Boolean ifCalculateTotal=queryBuilder.getTable().getTotalCountEnabled();
+            	
             	BoundSql boundSql = ms.getSqlSource().getBoundSql(parameterObject);
             	if(ifCalculateTotal) {
-            		String countSql="select count(*) from ("+boundSql.getSql()+") a";//$NON-NLS-1$            		
+            		Object params = boundSql.getParameterObject();
+            		String countSql=builderConfig.getDatabaseDialect().generateCountSql(boundSql.getSql(), params, boundSql, ms, queryBuilder);
+            		
                 	Connection conn =ms.getConfiguration().getEnvironment().getDataSource().getConnection();
                 	PreparedStatement countStatement = null;
                 	ResultSet rs=null;
                     long totalItemCount = 0;
                     try {
-                    	mapperLogger.debug("==> TotalCount SQL:{}",countSql);
+                    	mapperLogger.debug("==> TotalCount SQL: {}",countSql);
+                    	
                     	//预编译统计总记录数的sql
                     	countStatement = conn.prepareStatement(countSql);
-                    	
-                        Object params = boundSql.getParameterObject();
+                    	                        
+                        MetaObject metaObject = ms.getConfiguration()
+        						.newMetaObject(parameterObject);
+                    	List<Object> typeList = new ArrayList<>();
+        				for (ParameterMapping parameterMapping : boundSql.getParameterMappings()) {
+        					String propertyName = parameterMapping.getProperty();
+        					Object obj = null;
+        					if (metaObject.hasGetter(propertyName)) {
+        						obj = metaObject.getValue(propertyName);
+        					} else if (boundSql.hasAdditionalParameter(propertyName)) {
+        						obj = boundSql.getAdditionalParameter(propertyName);
+        					}
+        					if (obj == null) {
+	        		            typeList.add("null");
+	        		          } else {
+	        		            typeList.add(objectValueToString(obj));
+	        		          }
+        				}
+        		        final String parameters = typeList.toString();        		        
+        				mapperLogger.debug("==> TotalCount Parameters: {}",parameters.substring(1, parameters.length() - 1));
 
                         BoundSql countBs=copyAndNewBS(ms,boundSql,countSql);
         				//当sql带有参数时，下面的这句话就是获取查询条件的参数 
@@ -103,7 +130,7 @@ public class ResultTypeInterceptor implements Interceptor{
                         rs = countStatement.executeQuery();
                         while (rs.next()) {	                    	
                         	totalItemCount = rs.getInt(1);
-                        	mapperLogger.debug("<== TotalCount Result:{}",totalItemCount);
+                        	mapperLogger.debug("<== TotalCount Result: {}",totalItemCount);
                         }
                     } catch (SQLException e) {
                         e.printStackTrace();
@@ -123,48 +150,21 @@ public class ResultTypeInterceptor implements Interceptor{
                         }
                     }
                     queryBuilder.getTable().setTotalItemCount(totalItemCount);
+                    if(queryBuilder.getTable().getTemporarySkipSelectIfCountZero()!=null) {
+                    	if(Boolean.TRUE.equals(queryBuilder.getTable().getTemporarySkipSelectIfCountZero())) {
+                        	return new ArrayList<>();
+                        }
+                    }
+                    else {
+                    	if(totalItemCount==0 && builderConfig.getDatabaseDialect().skipSelectIfCountZero()) {
+                        	return new ArrayList<>();
+                        }
+                    }
             	}
             	
-            	String additionalSql=boundSql.getSql();
 				List<ParameterMapping> newParamterMappings=boundSql.getParameterMappings()==null?new ArrayList<>():new ArrayList<>(boundSql.getParameterMappings());
-				switch(builderConfig.getDbType().toLowerCase()) {
-			    	case "mysql"://$NON-NLS-1$
-						if(queryBuilder.getTable().getPageSize()!=null) {
-							additionalSql+=" LIMIT ?";//$NON-NLS-1$
-							newParamterMappings.add(createNewParameterMapping(ms,"table.pageSize",java.lang.Integer.class));//$NON-NLS-1$
-						}
-						if(queryBuilder.getTable().getSkipSize()!=null) {
-							additionalSql+=" OFFSET ?";//$NON-NLS-1$
-							newParamterMappings.add(createNewParameterMapping(ms,"table.skipSize",java.lang.Integer.class));//$NON-NLS-1$
-						}
-						break;
-			    	case "oracle"://$NON-NLS-1$
-						if(queryBuilder.getTable().getEndIndex()!=null) {
-							additionalSql="SELECT tt.*,ROWNUM AS _rowno FROM ("+additionalSql+") tt WHERE ROWNUM<= ? ";//$NON-NLS-1$
-							newParamterMappings.add(createNewParameterMapping(ms,"table.endIndex",java.lang.Integer.class));//$NON-NLS-1$							
-						}
-						if(queryBuilder.getTable().getStartIndex()!=null) {
-							additionalSql="SELECT * FROM ("+additionalSql+") t WHERE t._rowno> ?";//$NON-NLS-1$
-							newParamterMappings.add(createNewParameterMapping(ms,"table.startIndex",java.lang.Integer.class));//$NON-NLS-1$
-						}
-						break;
-			    	case "sqlserver"://$NON-NLS-1$
-						if(queryBuilder.getTable().getPageSize()!=null) {
-							if(queryBuilder.getTable().getSkipSize()!=null) {
-								additionalSql+=" OFFSET ? ROWS";//$NON-NLS-1$
-								newParamterMappings.add(createNewParameterMapping(ms,"table.skipSize",java.lang.Integer.class));//$NON-NLS-1$
-							}
-				    		else {
-				    			additionalSql+=" OFFSET 0 ROWS";//$NON-NLS-1$
-				    		}
-							additionalSql+=" FETCH NEXT ? ROWS ONLY";//$NON-NLS-1$
-							newParamterMappings.add(createNewParameterMapping(ms,"table.pageSize",java.lang.Integer.class));//$NON-NLS-1$
-						}
-						break;
-					default:
-						break;
-				}
-				BoundSql newBoundSql=new BoundSql(ms.getConfiguration(),additionalSql,newParamterMappings,boundSql.getParameterObject());
+				String pageSql=builderConfig.getDatabaseDialect().generatePaginationSql(boundSql.getSql(), newParamterMappings, boundSql, ms, queryBuilder);
+				BoundSql newBoundSql=new BoundSql(ms.getConfiguration(),pageSql,newParamterMappings,boundSql.getParameterObject());
 				//复制ms，重设类型
 			    args[0] = MappedStatementFactory.changeMappedStatementResultType(ms,new SonOfSqlSource(newBoundSql), queryBuilder.getOutputClazz());
 	    	}
@@ -252,7 +252,10 @@ public class ResultTypeInterceptor implements Interceptor{
 	    return invocation.proceed();
 	}
 
-	
+	/**
+	 * example: BuilderConfigurationFactory.builder().dialect(new MySqlDialect()).build()
+	 * @param builderConfig BuilderConfiguration
+	 */
 	public void setConfig(BuilderConfiguration builderConfig) {
 		this.builderConfig=builderConfig;
 		logger.debug("QueryBuilderConfiguration:{}",builderConfig);
@@ -373,8 +376,32 @@ public class ResultTypeInterceptor implements Interceptor{
     	builder.flushCacheRequired(ms.isFlushCacheRequired());
     	builder.useCache(ms.isUseCache());
 		return builder.build();
-		
 	}
+        
+    protected String removeBreakingWhitespace(String original) {
+        StringTokenizer whitespaceStripper = new StringTokenizer(original);
+        StringBuilder builder = new StringBuilder();
+        while (whitespaceStripper.hasMoreTokens()) {
+          builder.append(whitespaceStripper.nextToken());
+          builder.append(" ");
+        }
+        return builder.toString();
+      }
+    
+    protected String objectValueToString(Object value) {
+        if (value instanceof Array) {
+          try {
+            return ArrayUtil.toString(((Array) value).getArray()) + "(" + value.getClass().getSimpleName() + ")";
+          } catch (SQLException e) {
+            return value.toString();
+          }
+        }
+        else if (value instanceof Date) {
+			value = new Timestamp(((Date)value).getTime());
+		}
+        
+        return value.toString()+ "(" + value.getClass().getSimpleName() + ")";
+      }
 
     @Override
     public Object plugin(Object target) {
@@ -387,14 +414,6 @@ public class ResultTypeInterceptor implements Interceptor{
 
     @Override
     public void setProperties(Properties properties) {
-        String beginDelimiter = properties.getProperty("beginDelimiter");//$NON-NLS-1$
-        if(beginDelimiter != null){
-            builderConfig.setBeginDelimiter(beginDelimiter);
-        }
-        String endDelimiter = properties.getProperty("endDelimiter");//$NON-NLS-1$
-        if(beginDelimiter != null){
-            builderConfig.setEndDelimiter(endDelimiter);
-        }
         logger.debug("QueryBuilderConfiguration:{}",builderConfig);
     }
     

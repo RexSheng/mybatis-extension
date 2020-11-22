@@ -24,7 +24,7 @@ mybatis扩展库，纯mybatis原生支持，可用于辅助mybatis-plus、tk-myb
 <dependency>
     <groupId>com.github.rexsheng</groupId>
     <artifactId>mybatis-extension</artifactId>
-    <version>1.2.2</version>
+    <version>1.3.0</version>
 </dependency>
 
 ```
@@ -42,7 +42,11 @@ import com.github.rexsheng.mybatis.interceptor.ResultTypeInterceptor;
 public class InterceptorConfig {
 	@Bean
 	public ResultTypeInterceptor resultTypeInterceptor() {
+		//默认mysql方言
 		return new ResultTypeInterceptor();
+		//ResultTypeInterceptor interceptor=new ResultTypeInterceptor();
+		//interceptor.setConfig(BuilderConfigurationFactory.builder().dialect(new MySqlDialect()).build());
+		//return interceptor;
 	}
 }
 ```
@@ -94,6 +98,12 @@ public class MapperTest {
 	}
 }
 ```
+##### v<font size="3">1.3.0</font>  date: <font size="3">2020/11/22</font>
+1. 新增：IDatabaseDialect数据库方言接口，针对配置不同数据库的分页及特性
+2. 新增（变更）： 初始化时使用BuilderConfiguration.setDatabaseDialect(IDatabaseDialect)配置，废弃setDbType(String dbType)、setBeginDelimiter(String beginDelimiter)、setEndDelimiter(String endDelimiter)
+3. 新增：totalCountEnabled(Boolean)，当某个查询计算总条数为0时，该方法可自定义配置是否继续执行原有查询，优先级高于全局配置IDatabaseDialect.skipSelectIfCountZero()
+4. 优化：totalCountEnabled()生成的sql语句
+
 ##### v<font size="3">1.2.2</font>  date: <font size="3">2020/11/15</font>
 1. 优化：增强多字段的查询方法selectField,selectExcept
 2. 优化：精简生成的查询sql：当返回类型的属性与sql字段相同时，取消语句中的字段AS部分
@@ -119,7 +129,7 @@ public class MapperTest {
             <property name="suppressAllComments" value="false" />
         </commentGenerator>
         
-8. 优化：BuilderConfiguration中默认beginDelimiter和endDelimiter为空白字符串
+8. 优化（变更）：BuilderConfiguration中默认beginDelimiter和endDelimiter为空白字符串
 9. 优化：BuilderConfiguration中配置ITableHandler，IColumnHanler来获取数据表及列配置
 10. 优化：支持sqlserver2012以上使用offset fetch next分页
 

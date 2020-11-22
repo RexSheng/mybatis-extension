@@ -35,7 +35,6 @@ public class DynamicSqlProvider {
 	
 	private Map<Class<?>,String> aliasMap=new HashMap<>();
 	
-	
 	public <T> String selectByBuilder(QueryBuilder<T> builder) {
 		return new SQL(){{
 			BuilderConfiguration configuration=builder.getBuiderConfig();
@@ -217,18 +216,19 @@ public class DynamicSqlProvider {
 					}
 					if(whereCondition.getHasValue()) {
 						if(whereCondition.getListValue()) {
-							if(configuration.getMaxInLength()>0) {
+							int maxInLength=configuration.getDatabaseDialect().getProperty().getMaxInLength();
+							if(maxInLength>0) {
 								int length=((List<?>)whereCondition.getValue()).size();
 								int batchCount=0;
-								int yushu = length % configuration.getMaxInLength();
+								int yushu = length % maxInLength;
 						        if (yushu == 0) {
-						        	batchCount = length / configuration.getMaxInLength();
+						        	batchCount = length / maxInLength;
 						        } else {
-						        	batchCount = (length / configuration.getMaxInLength()) + 1;
+						        	batchCount = (length / maxInLength) + 1;
 						        }
 						        StringBuilder sb=new StringBuilder();
 						        int startIndex=0;
-						        int endIndex=configuration.getMaxInLength();
+						        int endIndex=configuration.getDatabaseDialect().getProperty().getMaxInLength();
 						        for (int sizeIndex = 0; sizeIndex < batchCount; sizeIndex++) {
 						        	List<String> listXml=new ArrayList<>();
 						        	
@@ -242,7 +242,7 @@ public class DynamicSqlProvider {
 						        	sb.append(" OR ");//$NON-NLS-1$
 						        	
 						        	startIndex=endIndex;
-						        	endIndex+=configuration.getMaxInLength();
+						        	endIndex+=maxInLength;
 						        }
 						        if(sb.length()>0) {
 						        	sb.delete(sb.length()-4,sb.length());
@@ -303,18 +303,19 @@ public class DynamicSqlProvider {
 						}
 						if(whereCondition.getHasValue()) {
 							if(whereCondition.getListValue()) {
-								if(configuration.getMaxInLength()>0) {
+								int maxInLength=configuration.getDatabaseDialect().getProperty().getMaxInLength();
+								if(maxInLength>0) {
 									int length=((List<?>)whereCondition.getValue()).size();
 									int batchCount=0;
-									int yushu = length % configuration.getMaxInLength();
+									int yushu = length % maxInLength;
 							        if (yushu == 0) {
-							        	batchCount = length / configuration.getMaxInLength();
+							        	batchCount = length / maxInLength;
 							        } else {
-							        	batchCount = (length / configuration.getMaxInLength()) + 1;
+							        	batchCount = (length / maxInLength) + 1;
 							        }
 							        StringBuilder sb=new StringBuilder();
 							        int startIndex=0;
-							        int endIndex=configuration.getMaxInLength();
+							        int endIndex=maxInLength;
 							        for (int sizeIndex = 0; sizeIndex < batchCount; sizeIndex++) {
 							        	List<String> listXml=new ArrayList<>();
 							        	
@@ -328,7 +329,7 @@ public class DynamicSqlProvider {
 							        	sb.append(" OR ");//$NON-NLS-1$
 							        	
 							        	startIndex=endIndex;
-							        	endIndex+=configuration.getMaxInLength();
+							        	endIndex+=maxInLength;
 							        }
 							        if(sb.length()>0) {
 							        	sb.delete(sb.length()-4,sb.length());
@@ -385,18 +386,19 @@ public class DynamicSqlProvider {
 							String left=whereCondition.getColumn().buildSqlNoAs(configuration,getTableAlias(whereCondition.getColumn().getEntityClass()));
 							if(whereCondition.getHasValue()) {
 								if(whereCondition.getListValue()) {
-									if(configuration.getMaxInLength()>0) {
+									int maxInLength=configuration.getDatabaseDialect().getProperty().getMaxInLength();
+									if(maxInLength>0) {
 										int length=((List<?>)whereCondition.getValue()).size();
 										int batchCount=0;
-										int yushu = length % configuration.getMaxInLength();
+										int yushu = length % maxInLength;
 								        if (yushu == 0) {
-								        	batchCount = length / configuration.getMaxInLength();
+								        	batchCount = length / maxInLength;
 								        } else {
-								        	batchCount = (length / configuration.getMaxInLength()) + 1;
+								        	batchCount = (length / maxInLength) + 1;
 								        }
 								        StringBuilder sb=new StringBuilder();
 								        int startIndex=0;
-								        int endIndex=configuration.getMaxInLength();
+								        int endIndex=maxInLength;
 								        for (int sizeIndex = 0; sizeIndex < batchCount; sizeIndex++) {
 								        	List<String> listXml=new ArrayList<>();
 								        	
@@ -410,7 +412,7 @@ public class DynamicSqlProvider {
 								        	sb.append(" OR ");//$NON-NLS-1$
 								        	
 								        	startIndex=endIndex;
-								        	endIndex+=configuration.getMaxInLength();
+								        	endIndex+=maxInLength;
 								        }
 								        if(sb.length()>0) {
 								        	sb.delete(sb.length()-4,sb.length());
@@ -469,18 +471,19 @@ public class DynamicSqlProvider {
 					}
 					if(whereCondition.getHasValue()) {
 						if(whereCondition.getListValue()) {
-							if(configuration.getMaxInLength()>0) {
+							int maxInLength=configuration.getDatabaseDialect().getProperty().getMaxInLength();
+							if(maxInLength>0) {
 								int length=((List<?>)whereCondition.getValue()).size();
 								int batchCount=0;
-								int yushu = length % configuration.getMaxInLength();
+								int yushu = length % maxInLength;
 						        if (yushu == 0) {
-						        	batchCount = length / configuration.getMaxInLength();
+						        	batchCount = length / maxInLength;
 						        } else {
-						        	batchCount = (length / configuration.getMaxInLength()) + 1;
+						        	batchCount = (length / maxInLength) + 1;
 						        }
 						        StringBuilder sb=new StringBuilder();
 						        int startIndex=0;
-						        int endIndex=configuration.getMaxInLength();
+						        int endIndex=maxInLength;
 						        for (int sizeIndex = 0; sizeIndex < batchCount; sizeIndex++) {
 						        	List<String> listXml=new ArrayList<>();
 						        	
@@ -494,7 +497,7 @@ public class DynamicSqlProvider {
 						        	sb.append(" OR ");//$NON-NLS-1$
 						        	
 						        	startIndex=endIndex;
-						        	endIndex+=configuration.getMaxInLength();
+						        	endIndex+=maxInLength;
 						        }
 						        if(sb.length()>0) {
 						        	sb.delete(sb.length()-4,sb.length());
@@ -547,18 +550,19 @@ public class DynamicSqlProvider {
 						}
 						if(whereCondition.getHasValue()) {
 							if(whereCondition.getListValue()) {
-								if(configuration.getMaxInLength()>0) {
+								int maxInLength=configuration.getDatabaseDialect().getProperty().getMaxInLength();
+								if(maxInLength>0) {
 									int length=((List<?>)whereCondition.getValue()).size();
 									int batchCount=0;
-									int yushu = length % configuration.getMaxInLength();
+									int yushu = length % maxInLength;
 							        if (yushu == 0) {
-							        	batchCount = length / configuration.getMaxInLength();
+							        	batchCount = length / maxInLength;
 							        } else {
-							        	batchCount = (length / configuration.getMaxInLength()) + 1;
+							        	batchCount = (length / maxInLength) + 1;
 							        }
 							        StringBuilder sb=new StringBuilder();
 							        int startIndex=0;
-							        int endIndex=configuration.getMaxInLength();
+							        int endIndex=maxInLength;
 							        for (int sizeIndex = 0; sizeIndex < batchCount; sizeIndex++) {
 							        	List<String> listXml=new ArrayList<>();
 							        	
@@ -572,7 +576,7 @@ public class DynamicSqlProvider {
 							        	sb.append(" OR ");//$NON-NLS-1$
 							        	
 							        	startIndex=endIndex;
-							        	endIndex+=configuration.getMaxInLength();
+							        	endIndex+=maxInLength;
 							        }
 							        if(sb.length()>0) {
 							        	sb.delete(sb.length()-4,sb.length());
@@ -623,18 +627,19 @@ public class DynamicSqlProvider {
 							String left=whereCondition.getColumn().buildSqlNoAs(configuration,getTableAlias(whereCondition.getColumn().getEntityClass()));
 							if(whereCondition.getHasValue()) {
 								if(whereCondition.getListValue()) {
-									if(configuration.getMaxInLength()>0) {
+									int maxInLength=configuration.getDatabaseDialect().getProperty().getMaxInLength();
+									if(maxInLength>0) {
 										int length=((List<?>)whereCondition.getValue()).size();
 										int batchCount=0;
-										int yushu = length % configuration.getMaxInLength();
+										int yushu = length % maxInLength;
 								        if (yushu == 0) {
-								        	batchCount = length / configuration.getMaxInLength();
+								        	batchCount = length / maxInLength;
 								        } else {
-								        	batchCount = (length / configuration.getMaxInLength()) + 1;
+								        	batchCount = (length / maxInLength) + 1;
 								        }
 								        StringBuilder sb=new StringBuilder();
 								        int startIndex=0;
-								        int endIndex=configuration.getMaxInLength();
+								        int endIndex=maxInLength;
 								        for (int sizeIndex = 0; sizeIndex < batchCount; sizeIndex++) {
 								        	List<String> listXml=new ArrayList<>();
 								        	
@@ -648,7 +653,7 @@ public class DynamicSqlProvider {
 								        	sb.append(" OR ");//$NON-NLS-1$
 								        	
 								        	startIndex=endIndex;
-								        	endIndex+=configuration.getMaxInLength();
+								        	endIndex+=maxInLength;
 								        }
 								        if(sb.length()>0) {
 								        	sb.delete(sb.length()-4,sb.length());
@@ -939,18 +944,19 @@ public class DynamicSqlProvider {
 					}
 					if(whereCondition.getHasValue()) {
 						if(whereCondition.getListValue()) {
-							if(configuration.getMaxInLength()>0) {
+							int maxInLength=configuration.getDatabaseDialect().getProperty().getMaxInLength();
+							if(maxInLength>0) {
 								int length=((List<?>)whereCondition.getValue()).size();
 								int batchCount=0;
-								int yushu = length % configuration.getMaxInLength();
+								int yushu = length % maxInLength;
 						        if (yushu == 0) {
-						        	batchCount = length / configuration.getMaxInLength();
+						        	batchCount = length / maxInLength;
 						        } else {
-						        	batchCount = (length / configuration.getMaxInLength()) + 1;
+						        	batchCount = (length / maxInLength) + 1;
 						        }
 						        StringBuilder sb=new StringBuilder();
 						        int startIndex=0;
-						        int endIndex=configuration.getMaxInLength();
+						        int endIndex=maxInLength;
 						        for (int sizeIndex = 0; sizeIndex < batchCount; sizeIndex++) {
 						        	List<String> listXml=new ArrayList<>();
 						        	
@@ -964,7 +970,7 @@ public class DynamicSqlProvider {
 						        	sb.append(" OR ");//$NON-NLS-1$
 						        	
 						        	startIndex=endIndex;
-						        	endIndex+=configuration.getMaxInLength();
+						        	endIndex+=maxInLength;
 						        }
 						        if(sb.length()>0) {
 						        	sb.delete(sb.length()-4,sb.length());
@@ -1025,18 +1031,19 @@ public class DynamicSqlProvider {
 						}
 						if(whereCondition.getHasValue()) {
 							if(whereCondition.getListValue()) {
-								if(configuration.getMaxInLength()>0) {
+								int maxInLength=configuration.getDatabaseDialect().getProperty().getMaxInLength();
+								if(maxInLength>0) {
 									int length=((List<?>)whereCondition.getValue()).size();
 									int batchCount=0;
-									int yushu = length % configuration.getMaxInLength();
+									int yushu = length % maxInLength;
 							        if (yushu == 0) {
-							        	batchCount = length / configuration.getMaxInLength();
+							        	batchCount = length / maxInLength;
 							        } else {
-							        	batchCount = (length / configuration.getMaxInLength()) + 1;
+							        	batchCount = (length / maxInLength) + 1;
 							        }
 							        StringBuilder sb=new StringBuilder();
 							        int startIndex=0;
-							        int endIndex=configuration.getMaxInLength();
+							        int endIndex=maxInLength;
 							        for (int sizeIndex = 0; sizeIndex < batchCount; sizeIndex++) {
 							        	List<String> listXml=new ArrayList<>();
 							        	
@@ -1050,7 +1057,7 @@ public class DynamicSqlProvider {
 							        	sb.append(" OR ");//$NON-NLS-1$
 							        	
 							        	startIndex=endIndex;
-							        	endIndex+=configuration.getMaxInLength();
+							        	endIndex+=maxInLength;
 							        }
 							        if(sb.length()>0) {
 							        	sb.delete(sb.length()-4,sb.length());
@@ -1107,18 +1114,19 @@ public class DynamicSqlProvider {
 							String left=whereCondition.getColumn().buildSqlNoAs(configuration,getTableAlias(whereCondition.getColumn().getEntityClass()));
 							if(whereCondition.getHasValue()) {
 								if(whereCondition.getListValue()) {
-									if(configuration.getMaxInLength()>0) {
+									int maxInLength=configuration.getDatabaseDialect().getProperty().getMaxInLength();
+									if(maxInLength>0) {
 										int length=((List<?>)whereCondition.getValue()).size();
 										int batchCount=0;
-										int yushu = length % configuration.getMaxInLength();
+										int yushu = length % maxInLength;
 								        if (yushu == 0) {
-								        	batchCount = length / configuration.getMaxInLength();
+								        	batchCount = length / maxInLength;
 								        } else {
-								        	batchCount = (length / configuration.getMaxInLength()) + 1;
+								        	batchCount = (length / maxInLength) + 1;
 								        }
 								        StringBuilder sb=new StringBuilder();
 								        int startIndex=0;
-								        int endIndex=configuration.getMaxInLength();
+								        int endIndex=maxInLength;
 								        for (int sizeIndex = 0; sizeIndex < batchCount; sizeIndex++) {
 								        	List<String> listXml=new ArrayList<>();
 								        	
@@ -1132,7 +1140,7 @@ public class DynamicSqlProvider {
 								        	sb.append(" OR ");//$NON-NLS-1$
 								        	
 								        	startIndex=endIndex;
-								        	endIndex+=configuration.getMaxInLength();
+								        	endIndex+=maxInLength;
 								        }
 								        if(sb.length()>0) {
 								        	sb.delete(sb.length()-4,sb.length());
@@ -1178,6 +1186,8 @@ public class DynamicSqlProvider {
             
         }}.toString();
 	}
+	
+	
 	
 	public <T> String deleteByBuilder(QueryBuilder<T> builder) {
 		BuilderConfiguration configuration=builder.getBuiderConfig();
@@ -1300,18 +1310,19 @@ public class DynamicSqlProvider {
 					}
 					if(whereCondition.getHasValue()) {
 						if(whereCondition.getListValue()) {
-							if(configuration.getMaxInLength()>0) {
+							int maxInLength=configuration.getDatabaseDialect().getProperty().getMaxInLength();
+							if(maxInLength>0) {
 								int length=((List<?>)whereCondition.getValue()).size();
 								int batchCount=0;
-								int yushu = length % configuration.getMaxInLength();
+								int yushu = length % maxInLength;
 						        if (yushu == 0) {
-						        	batchCount = length / configuration.getMaxInLength();
+						        	batchCount = length / maxInLength;
 						        } else {
-						        	batchCount = (length / configuration.getMaxInLength()) + 1;
+						        	batchCount = (length / maxInLength) + 1;
 						        }
 						        StringBuilder sb=new StringBuilder();
 						        int startIndex=0;
-						        int endIndex=configuration.getMaxInLength();
+						        int endIndex=maxInLength;
 						        for (int sizeIndex = 0; sizeIndex < batchCount; sizeIndex++) {
 						        	List<String> listXml=new ArrayList<>();
 						        	
@@ -1325,7 +1336,7 @@ public class DynamicSqlProvider {
 						        	sb.append(" OR ");//$NON-NLS-1$
 						        	
 						        	startIndex=endIndex;
-						        	endIndex+=configuration.getMaxInLength();
+						        	endIndex+=maxInLength;
 						        }
 						        if(sb.length()>0) {
 						        	sb.delete(sb.length()-4,sb.length());
@@ -1386,18 +1397,19 @@ public class DynamicSqlProvider {
 						}
 						if(whereCondition.getHasValue()) {
 							if(whereCondition.getListValue()) {
-								if(configuration.getMaxInLength()>0) {
+								int maxInLength=configuration.getDatabaseDialect().getProperty().getMaxInLength();
+								if(maxInLength>0) {
 									int length=((List<?>)whereCondition.getValue()).size();
 									int batchCount=0;
-									int yushu = length % configuration.getMaxInLength();
+									int yushu = length % maxInLength;
 							        if (yushu == 0) {
-							        	batchCount = length / configuration.getMaxInLength();
+							        	batchCount = length / maxInLength;
 							        } else {
-							        	batchCount = (length / configuration.getMaxInLength()) + 1;
+							        	batchCount = (length / maxInLength) + 1;
 							        }
 							        StringBuilder sb=new StringBuilder();
 							        int startIndex=0;
-							        int endIndex=configuration.getMaxInLength();
+							        int endIndex=maxInLength;
 							        for (int sizeIndex = 0; sizeIndex < batchCount; sizeIndex++) {
 							        	List<String> listXml=new ArrayList<>();
 							        	
@@ -1411,7 +1423,7 @@ public class DynamicSqlProvider {
 							        	sb.append(" OR ");//$NON-NLS-1$
 							        	
 							        	startIndex=endIndex;
-							        	endIndex+=configuration.getMaxInLength();
+							        	endIndex+=maxInLength;
 							        }
 							        if(sb.length()>0) {
 							        	sb.delete(sb.length()-4,sb.length());
@@ -1468,18 +1480,19 @@ public class DynamicSqlProvider {
 							String left=whereCondition.getColumn().buildSqlNoAs(configuration,getTableAlias(whereCondition.getColumn().getEntityClass()));
 							if(whereCondition.getHasValue()) {
 								if(whereCondition.getListValue()) {
-									if(configuration.getMaxInLength()>0) {
+									int maxInLength=configuration.getDatabaseDialect().getProperty().getMaxInLength();
+									if(maxInLength>0) {
 										int length=((List<?>)whereCondition.getValue()).size();
 										int batchCount=0;
-										int yushu = length % configuration.getMaxInLength();
+										int yushu = length % maxInLength;
 								        if (yushu == 0) {
-								        	batchCount = length / configuration.getMaxInLength();
+								        	batchCount = length / maxInLength;
 								        } else {
-								        	batchCount = (length / configuration.getMaxInLength()) + 1;
+								        	batchCount = (length / maxInLength) + 1;
 								        }
 								        StringBuilder sb=new StringBuilder();
 								        int startIndex=0;
-								        int endIndex=configuration.getMaxInLength();
+								        int endIndex=maxInLength;
 								        for (int sizeIndex = 0; sizeIndex < batchCount; sizeIndex++) {
 								        	List<String> listXml=new ArrayList<>();
 								        	
@@ -1493,7 +1506,7 @@ public class DynamicSqlProvider {
 								        	sb.append(" OR ");//$NON-NLS-1$
 								        	
 								        	startIndex=endIndex;
-								        	endIndex+=configuration.getMaxInLength();
+								        	endIndex+=maxInLength;
 								        }
 								        if(sb.length()>0) {
 								        	sb.delete(sb.length()-4,sb.length());

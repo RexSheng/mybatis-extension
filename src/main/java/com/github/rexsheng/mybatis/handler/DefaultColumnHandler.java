@@ -29,7 +29,7 @@ public class DefaultColumnHandler implements IColumnHandler{
 			col=StringUtils.camelCaseToUnderLine(columnBuilder.getFieldName());
 		}
 		if(SqlReservedWords.containsWord(col)) {
-			return configuration.getBeginDelimiter()+col+configuration.getEndDelimiter();
+			return configuration.getDatabaseDialect().getProperty().getBeginDelimiter()+col+configuration.getDatabaseDialect().getProperty().getEndDelimiter();
 		}
 		else {
 			return col;
