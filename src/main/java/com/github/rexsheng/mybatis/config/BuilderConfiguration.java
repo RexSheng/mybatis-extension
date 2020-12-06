@@ -43,7 +43,7 @@ public class BuilderConfiguration {
 	public void setColumnHandler(IColumnHandler columnHandler) {
 		this.columnHandler = columnHandler;
 	}
-	
+
 	public IDatabaseDialect getDatabaseDialect() {
 		return databaseDialect;
 	}

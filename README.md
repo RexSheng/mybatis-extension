@@ -98,10 +98,18 @@ public class MapperTest {
 	}
 }
 ```
+##### v<font size="3">1.3.1</font>  date: <font size="3">2020/12/06</font>
+1. 修复：ResultTypeInterceptor.setConfig(BuilderConfiguration)调用时的日志显示问题
+2. 优化：传入sql参数时支持jdbcType形式。例如： 
+
+```java
+selectBySqlWithParams("select id from t_user where create_time>#{createTime,jdbcType=TIMESTAMP}",...);
+```
+
 ##### v<font size="3">1.3.0</font>  date: <font size="3">2020/11/22</font>
 1. 新增：IDatabaseDialect数据库方言接口，针对配置不同数据库的分页及特性
 2. 新增（变更）： 初始化时使用BuilderConfiguration.setDatabaseDialect(IDatabaseDialect)配置，废弃setDbType(String dbType)、setBeginDelimiter(String beginDelimiter)、setEndDelimiter(String endDelimiter)
-3. 新增：totalCountEnabled(Boolean)，当某个查询计算总条数为0时，该方法可自定义配置是否继续执行原有查询，优先级高于全局配置IDatabaseDialect.skipSelectIfCountZero()
+3. 新增：totalCountEnabled(Boolean)，当某个查询计算总条数为0时，Boolean参数可自定义配置是否继续执行原有查询，优先级高于全局配置IDatabaseDialect.skipSelectIfCountZero()
 4. 优化：totalCountEnabled()生成的sql语句
 
 ##### v<font size="3">1.2.2</font>  date: <font size="3">2020/11/15</font>

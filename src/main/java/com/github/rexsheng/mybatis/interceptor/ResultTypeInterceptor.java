@@ -85,7 +85,6 @@ public class ResultTypeInterceptor implements Interceptor{
 	    		com.github.rexsheng.mybatis.extension.QueryBuilder<?> queryBuilder=(com.github.rexsheng.mybatis.extension.QueryBuilder<?>)parameterObject;
             	queryBuilder.setBuiderConfig(builderConfig);
             	Boolean ifCalculateTotal=queryBuilder.getTable().getTotalCountEnabled();
-            	
             	BoundSql boundSql = ms.getSqlSource().getBoundSql(parameterObject);
             	if(ifCalculateTotal) {
             		Object params = boundSql.getParameterObject();
@@ -214,10 +213,13 @@ public class ResultTypeInterceptor implements Interceptor{
 	    		
 	    		BoundSql newBoundSql=new BoundSql(ms.getConfiguration(),boundSql.getSql(),boundSql.getParameterMappings()==null?new ArrayList<>():new ArrayList<>(boundSql.getParameterMappings()),boundSql.getParameterObject());
 	    		int i=1;
-	    		Pattern pattern=Pattern.compile("#\\{\\w+\\}");
+	    		Pattern pattern=Pattern.compile("#\\{(\\s)*\\w+(\\s)*(,(\\s)*jdbcType(\\s)*=(\\s)*\\w+(\\s)*)?}");//$NON-NLS-1$
 				Matcher matcher=pattern.matcher(sql);
 				while(matcher.find()) {
 					String variable=matcher.group().substring(2, matcher.group().length()-1);
+					if(variable.indexOf(",")>-1) {
+						variable=variable.substring(0, variable.indexOf(",")).trim();
+					}
 					Object value=paramMap.get(variable);
 					if(value==null) {
 						throw new NullPointerException("参数值"+variable+"不能为空");//$NON-NLS-1$
@@ -353,9 +355,16 @@ public class ResultTypeInterceptor implements Interceptor{
 	
 	private ParameterMapping createNewParameterMapping(MappedStatement mappedStatement,String name,Class<?> javaType) {
 		ParameterMapping.Builder builder=new ParameterMapping.Builder(mappedStatement.getConfiguration(),name, javaType);
-//		builder.jdbcType(JdbcType.INTEGER);
 		return builder.build();
 	}
+	
+//	@SuppressWarnings("unused")
+//	private ParameterMapping createNewParameterMapping(MappedStatement mappedStatement,String name,JdbcType jdbcType) {
+//		TypeHandler<?> typeHandler=mappedStatement.getConfiguration().getTypeHandlerRegistry().getTypeHandler(jdbcType);
+//		ParameterMapping.Builder builder=new ParameterMapping.Builder(mappedStatement.getConfiguration(),name, typeHandler);
+//		builder.jdbcType(jdbcType);
+//		return builder.build();
+//	}
 
 	/**
 	 *复制一个新的MappedStatement
@@ -414,7 +423,6 @@ public class ResultTypeInterceptor implements Interceptor{
 
     @Override
     public void setProperties(Properties properties) {
-        logger.debug("QueryBuilderConfiguration:{}",builderConfig);
     }
     
     /**

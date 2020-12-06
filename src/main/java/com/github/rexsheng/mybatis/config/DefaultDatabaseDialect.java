@@ -55,4 +55,8 @@ public abstract class DefaultDatabaseDialect implements IDatabaseDialect{
 		this.property = property;
 	}
 	
+	@Override
+	public String toString() {
+		return property.toString();
+	}
 }

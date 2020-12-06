@@ -716,11 +716,15 @@ public class DynamicSqlProvider {
 		if(sql!=null) {
 			Map<String,Object> paramMap=(Map<String,Object>)input.get("params");//$NON-NLS-1$
 			if(paramMap!=null) {
-				Pattern pattern=Pattern.compile("[\\$#]\\{\\w+\\}");//$NON-NLS-1$
+				Pattern pattern=Pattern.compile("[\\$#]\\{(\\s)*\\w+(\\s)*(,(\\s)*jdbcType(\\s)*=(\\s)*\\w+(\\s)*)?}");//$NON-NLS-1$
 				Matcher matcher=pattern.matcher(sql);
 				while(matcher.find()) {
 					String variable=matcher.group().substring(2, matcher.group().length()-1);
+					if(variable.indexOf(",")>-1) {
+						variable=variable.substring(0, variable.indexOf(",")).trim();
+					}
 					logger.debug("sql find:{},start:{},end:{},variable:{}",matcher.group(),matcher.start(),matcher.end(),variable);
+					
 					Object value=paramMap.get(variable);
 					if(matcher.group().startsWith("#")){//$NON-NLS-1$
 						if(value==null) {
