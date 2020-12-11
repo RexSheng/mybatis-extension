@@ -107,22 +107,43 @@ public class TableColumnNamePlugin extends PluginAdapter {
 	@Override
 	public boolean modelFieldGenerated(Field field, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn,
 			IntrospectedTable introspectedTable, ModelClassType modelClassType) {
+		Boolean isPrimayKey=false;
+		for(IntrospectedColumn col:introspectedTable.getPrimaryKeyColumns()) {
+			if(col.getActualColumnName().equals(introspectedColumn.getActualColumnName())) {
+				isPrimayKey=true;
+				break;
+			}
+		}
+		
 		if(mode.equalsIgnoreCase("ALL") || mode.equalsIgnoreCase("COLUMN")) {
 			topLevelClass.addImportedType(new FullyQualifiedJavaType("com.github.rexsheng.mybatis.annotation.ColumnName"));
 			String columnName=MyBatis3FormattingUtilities.getEscapedColumnName(introspectedColumn);
+			StringBuilder sb=new StringBuilder();
+			if(isPrimayKey) {
+				topLevelClass.addImportedType(new FullyQualifiedJavaType("com.github.rexsheng.mybatis.core.ColumnType"));
+				sb.append("type=ColumnType.PK");
+			}
 			if(remarkType.equalsIgnoreCase("ALL") || remarkType.equalsIgnoreCase("FIELD")) {
 				String remarks = introspectedColumn.getRemarks();
 		        if (StringUtility.stringHasValue(remarks)) {
-		        	field.addAnnotation("@ColumnName(value=\""+columnName+"\",desc=\""+remarks+"\")");
+		        	if(sb.length()>0) {
+		        		sb.append(",");
+					}
+		        	sb.append("desc=\"");
+		        	sb.append(remarks);
+		        	sb.append("\"");
 		        }
-		        else {
-		        	field.addAnnotation("@ColumnName(\""+columnName+"\")");
-		        }
+			}
+			if(sb.length()>0) {
+	    		sb.insert(0, ",");
+	    		sb.insert(0, "\"");
+	    		sb.insert(0, columnName);
+	    		sb.insert(0, "value=\"");
+	    		field.addAnnotation("@ColumnName("+sb.toString()+")");
 			}
 			else {
 				field.addAnnotation("@ColumnName(\""+columnName+"\")");
-			}
-			
+			}			
 		}
 		return super.modelFieldGenerated(field, topLevelClass, introspectedColumn, introspectedTable, modelClassType);
 	}

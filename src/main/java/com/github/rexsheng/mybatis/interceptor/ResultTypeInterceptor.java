@@ -33,11 +33,13 @@ import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.scripting.defaults.DefaultParameterHandler;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.rexsheng.mybatis.config.BuilderConfiguration;
-import com.github.rexsheng.mybatis.core.MappedStatementFactory;
+import com.github.rexsheng.mybatis.factory.MappedStatementFactory;
+import com.github.rexsheng.mybatis.factory.ResultMappingFactory;
 import com.github.rexsheng.mybatis.mapper.DynamicMapper;
 
 /**
@@ -117,8 +119,11 @@ public class ResultTypeInterceptor implements Interceptor{
 	        		            typeList.add(objectValueToString(obj));
 	        		          }
         				}
-        		        final String parameters = typeList.toString();        		        
-        				mapperLogger.debug("==> TotalCount Parameters: {}",parameters.substring(1, parameters.length() - 1));
+        		        final String parameters = typeList.toString();    
+        		        if(mapperLogger.isDebugEnabled()) {
+        		        	mapperLogger.debug("==> TotalCount Parameters: {}",parameters.substring(1, parameters.length() - 1));
+        		        }
+        				
 
                         BoundSql countBs=copyAndNewBS(ms,boundSql,countSql);
         				//当sql带有参数时，下面的这句话就是获取查询条件的参数 
@@ -150,7 +155,7 @@ public class ResultTypeInterceptor implements Interceptor{
                     }
                     queryBuilder.getTable().setTotalItemCount(totalItemCount);
                     if(queryBuilder.getTable().getTemporarySkipSelectIfCountZero()!=null) {
-                    	if(Boolean.TRUE.equals(queryBuilder.getTable().getTemporarySkipSelectIfCountZero())) {
+                    	if(totalItemCount==0 && Boolean.TRUE.equals(queryBuilder.getTable().getTemporarySkipSelectIfCountZero())) {
                         	return new ArrayList<>();
                         }
                     }
@@ -165,7 +170,7 @@ public class ResultTypeInterceptor implements Interceptor{
 				String pageSql=builderConfig.getDatabaseDialect().generatePaginationSql(boundSql.getSql(), newParamterMappings, boundSql, ms, queryBuilder);
 				BoundSql newBoundSql=new BoundSql(ms.getConfiguration(),pageSql,newParamterMappings,boundSql.getParameterObject());
 				//复制ms，重设类型
-			    args[0] = MappedStatementFactory.changeMappedStatementResultType(ms,new SonOfSqlSource(newBoundSql), queryBuilder.getOutputClazz());
+			    args[0] = MappedStatementFactory.changeMappedStatementResultType(ms,new SonOfSqlSource(newBoundSql), queryBuilder.getOutputClazz(),ResultMappingFactory.getColumnMapping(ms, queryBuilder));
 	    	}
 	    	else if(methodName.contains("com.github.rexsheng.mybatis.mapper.DynamicMapper.updateByBuilder")) {//$NON-NLS-1$
 	    		Object parameterObject = args[1];
@@ -216,9 +221,18 @@ public class ResultTypeInterceptor implements Interceptor{
 	    		Pattern pattern=Pattern.compile("#\\{(\\s)*\\w+(\\s)*(,(\\s)*jdbcType(\\s)*=(\\s)*\\w+(\\s)*)?}");//$NON-NLS-1$
 				Matcher matcher=pattern.matcher(sql);
 				while(matcher.find()) {
+					JdbcType jdbcType=null;
 					String variable=matcher.group().substring(2, matcher.group().length()-1);
 					if(variable.indexOf(",")>-1) {
+						String jdbcTypeStr=variable.substring(variable.indexOf(",")+1);
 						variable=variable.substring(0, variable.indexOf(",")).trim();
+						if(jdbcTypeStr!=null && jdbcTypeStr.indexOf("=")>-1) {
+							jdbcType=JdbcType.valueOf(jdbcTypeStr.substring(jdbcTypeStr.indexOf("=")+1).trim().toUpperCase());
+							if(logger.isDebugEnabled()) {
+								logger.debug("property:{},jdbcType:{}",variable,jdbcType);
+							}
+						}
+						
 					}
 					Object value=paramMap.get(variable);
 					if(value==null) {
@@ -229,13 +243,13 @@ public class ResultTypeInterceptor implements Interceptor{
 						Iterator<?> iterator=iter.iterator();
 						while(iterator.hasNext()) {
 							Object currentValue=iterator.next();
-							newBoundSql.getParameterMappings().add(createNewParameterMapping(ms,String.valueOf(i),currentValue.getClass()));
+							newBoundSql.getParameterMappings().add(createNewParameterMapping(ms,String.valueOf(i),currentValue.getClass(),jdbcType));
 							newBoundSql.setAdditionalParameter(String.valueOf(i),currentValue);
 							i++;
 						}
 					}
 					else {
-						newBoundSql.getParameterMappings().add(createNewParameterMapping(ms,String.valueOf(i),value.getClass()));
+						newBoundSql.getParameterMappings().add(createNewParameterMapping(ms,String.valueOf(i),value.getClass(),jdbcType));
 						newBoundSql.setAdditionalParameter(String.valueOf(i),value);
 						i++;
 					}
@@ -260,7 +274,7 @@ public class ResultTypeInterceptor implements Interceptor{
 	 */
 	public void setConfig(BuilderConfiguration builderConfig) {
 		this.builderConfig=builderConfig;
-		logger.debug("QueryBuilderConfiguration:{}",builderConfig);
+		logger.info("Setting DatabaseDialect: {}",builderConfig);
 	}
 	 
     /**
@@ -353,8 +367,14 @@ public class ResultTypeInterceptor implements Interceptor{
 		return newBs;
 	}
 	
+	@SuppressWarnings("unused")
 	private ParameterMapping createNewParameterMapping(MappedStatement mappedStatement,String name,Class<?> javaType) {
+		return createNewParameterMapping(mappedStatement,name,javaType,null);
+	}
+	
+	private ParameterMapping createNewParameterMapping(MappedStatement mappedStatement,String name,Class<?> javaType,JdbcType jdbcType) {
 		ParameterMapping.Builder builder=new ParameterMapping.Builder(mappedStatement.getConfiguration(),name, javaType);
+		builder.jdbcType(jdbcType);
 		return builder.build();
 	}
 	

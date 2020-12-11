@@ -1,4 +1,4 @@
-package com.github.rexsheng.mybatis.core;
+package com.github.rexsheng.mybatis.factory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +23,14 @@ public class MappedStatementFactory {
 	 * @return 根据现有的 ms 创建一个新的
 	 */
 	public static MappedStatement changeMappedStatementResultType(MappedStatement ms, Class<?> resultType) {
-        return changeMappedStatementResultType(ms,ms.getSqlSource(),resultType);
+        return changeMappedStatementResultType(ms,ms.getSqlSource(),resultType,EMPTY_RESULTMAPPING);
+    }
+	
+	public static MappedStatement changeMappedStatementResultType(MappedStatement ms,SqlSource sqlSource, Class<?> resultType) {
+		return changeMappedStatementResultType(ms,sqlSource,resultType,EMPTY_RESULTMAPPING);
     }
 		
-	public static MappedStatement changeMappedStatementResultType(MappedStatement ms,SqlSource sqlSource, Class<?> resultType) {
+	public static MappedStatement changeMappedStatementResultType(MappedStatement ms,SqlSource sqlSource, Class<?> resultType,List<ResultMapping> resultMappingList) {
         //下面是新建的过程，考虑效率和复用对象的情况下，这里最后生成的ms可以缓存起来，下次根据 ms.getId() + "_" + getShortName(resultType) 直接返回 ms,省去反复创建的过程
         MappedStatement.Builder builder = new MappedStatement.Builder(ms.getConfiguration(), ms.getId(), sqlSource, ms.getSqlCommandType());
         builder.resource(ms.getResource());
@@ -44,14 +48,13 @@ public class MappedStatementFactory {
         builder.timeout(ms.getTimeout());
         builder.parameterMap(ms.getParameterMap());
 //        自定义resultMapping
-//        List<ResultMapping> resultMappingList=new ArrayList<>();
-//        resultMappingList.add(new ResultMapping.Builder(ms.getConfiguration(), "pageIndex","page_index",java.lang.Integer.class).build());
+//        resultMappingList.add(new ResultMapping.Builder(ms.getConfiguration(), "userId","user_id",java.lang.Integer.class).build());
 //        resultMappingList.add(new ResultMapping.Builder(ms.getConfiguration(), "pageSize","page_size",java.lang.Integer.class).build());
 //        resultMappingList.add(new ResultMapping.Builder(ms.getConfiguration(), "totalItemCount","total_item_count",java.lang.Long.class).build());
 //        ResultMap resultMap = new ResultMap.Builder(ms.getConfiguration(), ms.getId(), resultType, resultMappingList).build();
         //count查询返回值int
         List<ResultMap> resultMaps = new ArrayList<ResultMap>();
-        ResultMap resultMap = new ResultMap.Builder(ms.getConfiguration(), ms.getId(), resultType, EMPTY_RESULTMAPPING).build();
+        ResultMap resultMap = new ResultMap.Builder(ms.getConfiguration(), ms.getId(), resultType, resultMappingList).build();
         resultMaps.add(resultMap);
         builder.resultMaps(resultMaps);
         builder.resultSetType(ms.getResultSetType());

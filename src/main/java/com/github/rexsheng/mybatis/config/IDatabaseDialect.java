@@ -26,4 +26,5 @@ public interface IDatabaseDialect {
 	 * @return 是否跳过原有查询
 	 */
 	Boolean skipSelectIfCountZero();
+	
 }

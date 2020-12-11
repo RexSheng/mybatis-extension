@@ -24,7 +24,7 @@ mybatis扩展库，纯mybatis原生支持，可用于辅助mybatis-plus、tk-myb
 <dependency>
     <groupId>com.github.rexsheng</groupId>
     <artifactId>mybatis-extension</artifactId>
-    <version>1.3.0</version>
+    <version>1.4.0</version>
 </dependency>
 
 ```
@@ -98,6 +98,12 @@ public class MapperTest {
 	}
 }
 ```
+##### v<font size="3">1.4.0</font>  date: <font size="3">2020/12/11</font>
+1. 新增：TableColumnNamePlugin中ColumnName注解 新增字段类型，可指定字段为主键类型
+2. 修复：totalCountEnabled(Boolean)参数为true时不继续执行查询的问题
+3. 优化：精简selectByBuilder生成的sql，减少不必要的AS关键字
+4. 优化：sql中jdbcType增强支持
+
 ##### v<font size="3">1.3.1</font>  date: <font size="3">2020/12/06</font>
 1. 修复：ResultTypeInterceptor.setConfig(BuilderConfiguration)调用时的日志显示问题
 2. 优化：传入sql参数时支持jdbcType形式。例如： 
@@ -125,7 +131,7 @@ selectBySqlWithParams("select id from t_user where create_time>#{createTime,jdbc
 ##### v<font size="3">1.2.0</font>  date: <font size="3">2020/10/17</font>
 1. 新增：DynamicMapper批量更新方法updateByBuilder，批量删除方法deleteByBuilder，查询总条数方法countBySql、countBySqlWithParams
 2. 新增：tablename注解新增catalog,schema配置
-3. TableColumnNamePlugin新增catalog,schema配置，支持传入属性：注解位置type=ALL/TABLE/COLUMN,备注类型remark=ALL,NONE,FIELD,METHOD
+3. 新增：TableColumnNamePlugin新增catalog,schema配置，支持传入属性：注解位置type=ALL/TABLE/COLUMN,备注类型remark=ALL,NONE,FIELD,METHOD
 4. 新增：selectByBuilder支持distinct
 5. 新增：where条件notIn,notLike
 6. 新增：BuilderConfiguration配置maxInLength，自动拆分列表值为or连接的条件，用于解决oracle中in最多1000个值的问题

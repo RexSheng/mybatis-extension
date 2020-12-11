@@ -723,7 +723,9 @@ public class DynamicSqlProvider {
 					if(variable.indexOf(",")>-1) {
 						variable=variable.substring(0, variable.indexOf(",")).trim();
 					}
-					logger.debug("sql find:{},start:{},end:{},variable:{}",matcher.group(),matcher.start(),matcher.end(),variable);
+					if(logger.isDebugEnabled()) {
+						logger.debug("variable find:{},start:{},end:{},property:{}",matcher.group(),matcher.start(),matcher.end(),variable);
+					}
 					
 					Object value=paramMap.get(variable);
 					if(matcher.group().startsWith("#")){//$NON-NLS-1$

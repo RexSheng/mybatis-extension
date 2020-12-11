@@ -88,7 +88,6 @@ public class ReflectUtil {
 		      tempClass = tempClass.getSuperclass(); //得到父类,然后赋给自己
 		}
 		return fieldList.toArray(new Field[fieldList.size()]);
-		
 	}
 
     /**

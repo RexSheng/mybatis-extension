@@ -5,6 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.github.rexsheng.mybatis.core.ColumnType;
+
 /**
  * 表字段信息
  * @author RexSheng
@@ -26,4 +28,11 @@ public @interface ColumnName {
 	 * @since 1.2.0
 	 */
 	String desc() default "";
+	
+	/**
+	 * 字段类型
+	 * @return 字段类型
+	 * @since 1.4.0
+	 */
+	ColumnType type() default ColumnType.NORMAL;
 }

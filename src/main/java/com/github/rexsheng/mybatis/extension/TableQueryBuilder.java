@@ -610,7 +610,8 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	
 	/**
 	 * 允许在查询过程中同时计算影响的总行数
-	 * @param skipSelectIfCountZero 是否在总行数为0时，继续执行原有查询，忽略全局配置{@link IDatabaseDialect#skipSelectIfCountZero()}
+	 * @param skipSelectIfCountZero 是否在总行数为0时，不继续执行原有查询，忽略全局配置{@link IDatabaseDialect#skipSelectIfCountZero()} 
+	 * true停止执行查询，false继续执行查询
 	 * @return 当前条件
 	 * @since 1.3.0
 	 */

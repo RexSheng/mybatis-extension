@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.util.regex.Pattern;
 
 import com.github.rexsheng.mybatis.config.BuilderConfiguration;
-import com.github.rexsheng.mybatis.core.SqlReservedWords;
 import com.github.rexsheng.mybatis.util.ReflectUtil;
 
 /**
@@ -73,16 +72,7 @@ public class ColumnQueryBuilder<T> extends EntityInfo<T>{
 	}
 	 
 
-	public String getAliasName(BuilderConfiguration configuration) {
-		if(aliasName==null) {
-			String fieldName=getFieldName();
-			if(SqlReservedWords.containsWord(fieldName)) {
-				return configuration.getDatabaseDialect().getProperty().getBeginDelimiter()+fieldName+configuration.getDatabaseDialect().getProperty().getEndDelimiter();
-			}
-			else {
-				return fieldName;
-			}
-		}
+	public String getAliasName() {
 		return aliasName;
 	}
 
@@ -92,24 +82,40 @@ public class ColumnQueryBuilder<T> extends EntityInfo<T>{
 	
 	public String buildSql(BuilderConfiguration configuration) {
 		String actualName=this.prefix+getActualColumnName(configuration)+this.suffix;
-		String aliasName=getAliasName(configuration);
-		if(actualName.equals(aliasName)) {
+		if(aliasName==null) {
 			return actualName;
 		}
 		else {
-			return actualName+" AS "+aliasName;//$NON-NLS-1$
-		}		
+			if(actualName.equals(aliasName)) {
+				return actualName;
+			}
+			else {
+				return actualName+" AS "+aliasName;//$NON-NLS-1$
+			}
+//			String fieldName=getFieldName();
+//			if(SqlReservedWords.containsWord(fieldName)) {
+//				return configuration.getDatabaseDialect().getProperty().getBeginDelimiter()+fieldName+configuration.getDatabaseDialect().getProperty().getEndDelimiter();
+//			}
+//			else {
+//				return fieldName;
+//			}
+		}	
 	}
 	
 	public String buildSql(BuilderConfiguration configuration,String tableAlias) {
 		String actualName=getActualColumnName(configuration);
-		String aliasName=getAliasName(configuration);
-		if((this.prefix+actualName+this.suffix).equals(aliasName)) {
+		String aliasName=getAliasName();
+		if(aliasName==null) {
 			return this.prefix+(supportAlias?(tableAlias+"."):"")+actualName+this.suffix;//$NON-NLS-1$
 		}
 		else {
-			return this.prefix+(supportAlias?(tableAlias+"."):"")+actualName+this.suffix+" AS "+aliasName;//$NON-NLS-1$
-		}		
+			if((this.prefix+actualName+this.suffix).equals(aliasName)) {
+				return this.prefix+(supportAlias?(tableAlias+"."):"")+actualName+this.suffix;//$NON-NLS-1$
+			}
+			else {
+				return this.prefix+(supportAlias?(tableAlias+"."):"")+actualName+this.suffix+" AS "+aliasName;//$NON-NLS-1$
+			}
+		}	
 	}
 	
 	public String buildSqlNoAs(BuilderConfiguration configuration) {
@@ -151,6 +157,24 @@ public class ColumnQueryBuilder<T> extends EntityInfo<T>{
 		else {
 			return inputColumnName;
 		}
+	}
+	
+	public String getPropertyName() {
+		if(aliasName!=null) {
+			return aliasName;
+		}
+		return fieldName;
+	}
+	
+	public String getColumnName(BuilderConfiguration configuration) {
+		String columnName=aliasName!=null?aliasName:configuration.getColumnHandler().getName(this, configuration);
+		if(configuration.getDatabaseDialect().getProperty().getBeginDelimiter()!=null) {
+			columnName=columnName.replace(configuration.getDatabaseDialect().getProperty().getBeginDelimiter(), "");
+		}
+		if(configuration.getDatabaseDialect().getProperty().getEndDelimiter()!=null) {
+			columnName=columnName.replace(configuration.getDatabaseDialect().getProperty().getEndDelimiter(), "");
+		}
+		return columnName;
 	}
 
 	public Field getField() {

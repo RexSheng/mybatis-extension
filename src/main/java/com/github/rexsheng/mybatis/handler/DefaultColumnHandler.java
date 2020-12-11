@@ -2,6 +2,7 @@ package com.github.rexsheng.mybatis.handler;
 
 import com.github.rexsheng.mybatis.annotation.ColumnName;
 import com.github.rexsheng.mybatis.config.BuilderConfiguration;
+import com.github.rexsheng.mybatis.core.ColumnType;
 import com.github.rexsheng.mybatis.core.SqlReservedWords;
 import com.github.rexsheng.mybatis.extension.ColumnQueryBuilder;
 import com.github.rexsheng.mybatis.util.StringUtils;
@@ -34,5 +35,16 @@ public class DefaultColumnHandler implements IColumnHandler{
 		else {
 			return col;
 		}
+	}
+	
+	@Override
+	public Boolean isPrimaryKey(ColumnQueryBuilder<?> columnBuilder, BuilderConfiguration configuration) {
+		if(columnBuilder.getField()!=null) {
+			ColumnName columnName=columnBuilder.getField().getAnnotation(ColumnName.class);
+			if(columnName!=null) {
+				return ColumnType.PK.equals(columnName.type());
+			}
+		}
+		return false;
 	}
 }
