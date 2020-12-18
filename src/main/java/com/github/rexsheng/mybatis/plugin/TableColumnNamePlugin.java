@@ -47,6 +47,17 @@ public class TableColumnNamePlugin extends PluginAdapter {
 	
 	@Override
 	public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+		modelClassGenerated(topLevelClass,introspectedTable);
+		return super.modelBaseRecordClassGenerated(topLevelClass, introspectedTable);
+	}
+	
+	@Override
+	public boolean modelRecordWithBLOBsClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+		modelClassGenerated(topLevelClass,introspectedTable);
+		return super.modelBaseRecordClassGenerated(topLevelClass, introspectedTable);
+	}
+
+	public void modelClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
 		if(mode.equalsIgnoreCase("ALL") || mode.equalsIgnoreCase("TABLE")) {
 			topLevelClass.addImportedType(new FullyQualifiedJavaType("com.github.rexsheng.mybatis.annotation.TableName"));
 			StringBuilder sb=new StringBuilder();
@@ -69,7 +80,7 @@ public class TableColumnNamePlugin extends PluginAdapter {
 			        if (StringUtility.stringHasValue(remarks)) {
 			        	sb.append(",");
 						sb.append("desc=\"");
-						sb.append(remarks);
+						sb.append(remarks.replaceAll("\r|\n", " "));
 						sb.append("\"");
 			        }
 				}
@@ -84,7 +95,7 @@ public class TableColumnNamePlugin extends PluginAdapter {
 						
 			        	sb.append(",");
 						sb.append("desc=\"");
-						sb.append(remarks);
+						sb.append(remarks.replaceAll("\r|\n", " "));
 						sb.append("\"");
 			        }
 			        else {
@@ -101,9 +112,8 @@ public class TableColumnNamePlugin extends PluginAdapter {
 			}
 			topLevelClass.addAnnotation("@TableName("+sb.toString()+")");
 		}
-		return super.modelBaseRecordClassGenerated(topLevelClass, introspectedTable);
 	}
-
+	
 	@Override
 	public boolean modelFieldGenerated(Field field, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn,
 			IntrospectedTable introspectedTable, ModelClassType modelClassType) {
@@ -130,7 +140,7 @@ public class TableColumnNamePlugin extends PluginAdapter {
 		        		sb.append(",");
 					}
 		        	sb.append("desc=\"");
-		        	sb.append(remarks);
+		        	sb.append(remarks.replaceAll("\r|\n", " "));
 		        	sb.append("\"");
 		        }
 			}

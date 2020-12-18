@@ -84,7 +84,7 @@ public class ReflectUtil {
 		List<Field> fieldList = new ArrayList<>();
 		Class<?> tempClass = target;
 		while (tempClass != null && tempClass != Object.class) {//当父类为null的时候说明到达了最上层的父类(Object类).
-		      fieldList.addAll(Arrays.asList(tempClass.getDeclaredFields()));
+		      fieldList.addAll(0,Arrays.asList(tempClass.getDeclaredFields()));
 		      tempClass = tempClass.getSuperclass(); //得到父类,然后赋给自己
 		}
 		return fieldList.toArray(new Field[fieldList.size()]);

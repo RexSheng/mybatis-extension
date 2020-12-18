@@ -24,7 +24,7 @@ mybatis扩展库，纯mybatis原生支持，可用于辅助mybatis-plus、tk-myb
 <dependency>
     <groupId>com.github.rexsheng</groupId>
     <artifactId>mybatis-extension</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
 </dependency>
 
 ```
@@ -98,6 +98,11 @@ public class MapperTest {
 	}
 }
 ```
+##### v<font size="3">1.4.1</font>  date: <font size="3">2020/12/18</font>
+1. 修复：TableColumnNamePlugin中BLOB类无注解问题
+2. 修复：TableColumnNamePlugin中备注字符串换行问题
+3. 优化：selectAll()字段时，按照优先父类字段的顺序获取列名
+
 ##### v<font size="3">1.4.0</font>  date: <font size="3">2020/12/11</font>
 1. 新增：TableColumnNamePlugin中ColumnName注解 新增字段类型，可指定字段为主键类型
 2. 修复：totalCountEnabled(Boolean)参数为true时不继续执行查询的问题
