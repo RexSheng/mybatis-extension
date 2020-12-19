@@ -5,9 +5,13 @@ import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 import com.github.rexsheng.mybatis.converter.Converter;
@@ -20,6 +24,8 @@ public class ReflectUtil {
 	
 	private static final Pattern GET_PATTERN = Pattern.compile("get[A-Z].*");
     private static final Pattern IS_PATTERN = Pattern.compile("is[A-Z].*");
+    
+    private static final Map<Class<?>, List<Field>> CLASS_FIELD_CACHE = new ConcurrentHashMap<>();
     
     /**
      * 利用反射获取指定对象的指定属性
@@ -80,14 +86,33 @@ public class ReflectUtil {
         return field;
     }
     
-    public static Field[] getDeclaredFields(Class<?> target) {
+    public static List<Field> getDeclaredFields(Class<?> target) {
+		List<Field> fieldList = CLASS_FIELD_CACHE.get(target);
+        if (fieldList==null || fieldList.isEmpty()) {
+            synchronized (CLASS_FIELD_CACHE) {
+            	fieldList = getDeclaredFieldsWithoutCache(target);
+                CLASS_FIELD_CACHE.put(target, fieldList);
+            }
+        }
+        return fieldList;
+	}
+    
+    public static List<Field> getDeclaredFieldsWithoutCache(Class<?> target) {
 		List<Field> fieldList = new ArrayList<>();
 		Class<?> tempClass = target;
 		while (tempClass != null && tempClass != Object.class) {//当父类为null的时候说明到达了最上层的父类(Object类).
-		      fieldList.addAll(0,Arrays.asList(tempClass.getDeclaredFields()));
-		      tempClass = tempClass.getSuperclass(); //得到父类,然后赋给自己
+			for(Field field:tempClass.getDeclaredFields()) {
+				if(Modifier.isStatic(field.getModifiers()) || Modifier.isTransient(field.getModifiers())) {
+					continue;
+				}
+				//去重
+				if(!fieldList.contains(field)) {
+					fieldList.add(0, field);
+				}
+			}
+		    tempClass = tempClass.getSuperclass(); //得到父类,然后赋给自己
 		}
-		return fieldList.toArray(new Field[fieldList.size()]);
+		return fieldList;
 	}
 
     /**
@@ -182,5 +207,25 @@ public class ReflectUtil {
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException();
         }
+    }
+    
+    public static Class<?> getSuperClassGenricType(Class<?> clazz) {
+        return getSuperClassGenricType(clazz, 0);
+    }
+    
+    public static Class<?> getSuperClassGenricType(Class<?> clazz, int index)
+            throws IndexOutOfBoundsException {
+        Type genType = clazz.getGenericSuperclass();
+        if (!(genType instanceof ParameterizedType)) {
+            return Object.class;
+        }
+        Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
+        if (index >= params.length || index < 0) {
+            return Object.class;
+        }
+        if (!(params[index] instanceof Class)) {
+            return Object.class;
+        }
+        return (Class<?>) params[index];
     }
 }

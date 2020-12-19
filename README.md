@@ -24,7 +24,7 @@ mybatis扩展库，纯mybatis原生支持，可用于辅助mybatis-plus、tk-myb
 <dependency>
     <groupId>com.github.rexsheng</groupId>
     <artifactId>mybatis-extension</artifactId>
-    <version>1.4.1</version>
+    <version>1.4.2</version>
 </dependency>
 
 ```
@@ -98,6 +98,9 @@ public class MapperTest {
 	}
 }
 ```
+##### v<font size="3">1.4.2</font>  date: <font size="3">2020/12/20</font>
+1. 修复：排除static与transient修饰的字段
+
 ##### v<font size="3">1.4.1</font>  date: <font size="3">2020/12/18</font>
 1. 修复：TableColumnNamePlugin中BLOB类无注解问题
 2. 修复：TableColumnNamePlugin中备注字符串换行问题

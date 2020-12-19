@@ -768,7 +768,7 @@ public class DynamicSqlProvider {
 							Class<?> clazz=element.getClass();
 							String tableName=config.getTableHandler().getName(element.getClass(),config);
 							INSERT_INTO(tableName);
-							Field[] fields=ReflectUtil.getDeclaredFields(clazz);
+							List<Field> fields=ReflectUtil.getDeclaredFields(clazz);
 							for(Field field:fields) {
 								ColumnQueryBuilder<?> colBuilder=new ColumnQueryBuilder<>(clazz,field);
 								String col=config.getColumnHandler().getName(colBuilder,config);

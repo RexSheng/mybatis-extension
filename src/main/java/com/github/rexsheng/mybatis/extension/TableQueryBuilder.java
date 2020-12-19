@@ -2,7 +2,6 @@ package com.github.rexsheng.mybatis.extension;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -81,7 +80,7 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	}
 	
 	public TableQueryBuilder<T> selectAll() {
-		Field[] fields=ReflectUtil.getDeclaredFields(super.getEntityClass());
+		List<Field> fields=ReflectUtil.getDeclaredFields(super.getEntityClass());
 		for(Field field:fields) {
 			ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),field.getName());
 			this.selectColumns.add(columnQuery);
@@ -106,8 +105,8 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	 * @since 1.2.2
 	 */
 	public TableQueryBuilder<T> selectField(Predicate<Field> filter) {
-		Field[] fields=ReflectUtil.getDeclaredFields(super.getEntityClass());
-		Arrays.asList(fields).stream().filter(filter).forEach(field->{
+		List<Field> fields=ReflectUtil.getDeclaredFields(super.getEntityClass());
+		fields.stream().filter(filter).forEach(field->{
 			ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),field.getName());
 			this.selectColumns.add(columnQuery);
 		});
@@ -121,8 +120,8 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	 * @since 1.2.2
 	 */
 	public TableQueryBuilder<T> selectExcept(Predicate<Field> filter) {
-		Field[] fields=ReflectUtil.getDeclaredFields(super.getEntityClass());
-		Arrays.asList(fields).stream().filter(a->!filter.test(a)).forEach(field->{
+		List<Field> fields=ReflectUtil.getDeclaredFields(super.getEntityClass());
+		fields.stream().filter(a->!filter.test(a)).forEach(field->{
 			ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),field.getName());
 			this.selectColumns.add(columnQuery);
 		});
