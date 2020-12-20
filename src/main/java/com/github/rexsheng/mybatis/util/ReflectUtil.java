@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.github.rexsheng.mybatis.converter.Converter;
 import com.github.rexsheng.mybatis.converter.DtoConverter;
@@ -101,18 +102,19 @@ public class ReflectUtil {
 		List<Field> fieldList = new ArrayList<>();
 		Class<?> tempClass = target;
 		while (tempClass != null && tempClass != Object.class) {//当父类为null的时候说明到达了最上层的父类(Object类).
+			List<Field> currentList=new ArrayList<>();
 			for(Field field:tempClass.getDeclaredFields()) {
-				if(Modifier.isStatic(field.getModifiers()) || Modifier.isTransient(field.getModifiers())) {
-					continue;
-				}
 				//去重
-				if(!fieldList.contains(field)) {
-					fieldList.add(0, field);
+				if(!fieldList.stream().anyMatch(a->a.getName().equals(field.getName()))) {
+					currentList.add(field);
 				}
 			}
+			fieldList.addAll(0, currentList);
 		    tempClass = tempClass.getSuperclass(); //得到父类,然后赋给自己
 		}
-		return fieldList;
+		return fieldList.stream()
+				.filter(field->!Modifier.isStatic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers()))
+				.collect(Collectors.toList());
 	}
 
     /**
