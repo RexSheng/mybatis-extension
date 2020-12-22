@@ -835,7 +835,7 @@ public class DynamicSqlProvider {
 				secondJoinList.addAll(entry.getTable().getJoinList());
 				secondJoinClassList.add(entry.getTable().getEntityClass());
 			}
-			
+			i=0;
 			for(JoinTableConditionInternal<?, ?> entry:sourceTable.getJoinList()) {
 				for(ColumnQueryBuilder<?> column:entry.getTable().getOrderByColumns()) {
 					ORDER_BY(column.buildSqlNoAs(configuration,getTableAlias(column.getEntityClass())));
@@ -871,6 +871,30 @@ public class DynamicSqlProvider {
 					String rightAlias=getTableAlias(entry.getCondtion().getRightClazz());
 					setConditions.add(internalOn.getLeftColumn().buildSqlNoAs(configuration,leftAlias)+internalOn.getRelation()+internalOn.getRightColumn().buildSqlNoAs(configuration,rightAlias));
 				}
+				//支持子表更新字段值
+				if(entry.getTable() instanceof TableUpdateBuilder<?>) {
+					TableUpdateBuilder<?> entryUpdateBuilder=(TableUpdateBuilder<?>)entry.getTable();
+					int ii=0;
+					for(WhereConditionBuilder<?> condition:entryUpdateBuilder.getUpdateColumns()) {
+						String left=null;
+						if(singleTable) {
+							left=condition.getColumn().buildSqlNoAs(configuration);
+						}
+						else {
+							left=condition.getColumn().buildSqlNoAs(configuration,getTableAlias(condition.getColumn().getEntityClass()));
+						}
+						if(condition.getHasValue()) {
+							//listvalue情况不会发生
+							setConditions.add(left+" "+condition.getRelation()+" #{table.joinList["+i+"].table.updateColumns["+ii+"].value}");//$NON-NLS-1$
+						}
+						else {
+							setConditions.add(left+" "+condition.getRelation());
+						}
+						ii++;
+					}
+				}
+				
+				
 				if(!setConditions.isEmpty()) {
 					SET(setConditions.toArray(new String[setConditions.size()]));
 				}
@@ -896,7 +920,7 @@ public class DynamicSqlProvider {
 				else if(entry.getJoinType().equals("inner")) {//$NON-NLS-1$
 					INNER_JOIN(getTableName(configuration,entry.getTable()) +" AS "+getTableAlias(entry.getTable().getEntityClass())+onConditionsStr);
 				}
-				
+				i++;
 			}
 			
 			Iterator<JoinTableConditionInternal<?, ?>> iterator = secondJoinList.iterator();

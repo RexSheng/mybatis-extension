@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.github.rexsheng.mybatis.annotation.ColumnIgnore;
 import com.github.rexsheng.mybatis.converter.Converter;
 import com.github.rexsheng.mybatis.converter.DtoConverter;
 import com.github.rexsheng.mybatis.core.SFunction;
@@ -113,7 +114,7 @@ public class ReflectUtil {
 		    tempClass = tempClass.getSuperclass(); //得到父类,然后赋给自己
 		}
 		return fieldList.stream()
-				.filter(field->!Modifier.isStatic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers()))
+				.filter(field->!Modifier.isStatic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers()) && !field.isAnnotationPresent(ColumnIgnore.class))
 				.collect(Collectors.toList());
 	}
 

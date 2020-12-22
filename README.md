@@ -24,7 +24,7 @@ mybatis扩展库，纯mybatis原生支持，可用于辅助mybatis-plus、tk-myb
 <dependency>
     <groupId>com.github.rexsheng</groupId>
     <artifactId>mybatis-extension</artifactId>
-    <version>1.4.3</version>
+    <version>1.5.0</version>
 </dependency>
 
 ```
@@ -98,6 +98,14 @@ public class MapperTest {
 	}
 }
 ```
+##### v<font size="3">1.5.1</font>  date: <font size="3">2021/02/21</font>
+1. 修复：update多表时可更新多个表字段
+
+##### v<font size="3">1.5.0</font>  date: <font size="3">2020/12/22</font>
+1. 新增：totalCountDisabled()方法
+2. 新增：@ColumnIgnore注解用于忽略字段查询
+3. 修复：oracle分页异常问题
+
 ##### v<font size="3">1.4.3</font>  date: <font size="3">2020/12/20</font>
 1. 修复：selectAll()时字段乱序问题
 2. 修复：字段重载时偶尔无效问题

@@ -97,7 +97,7 @@ public class ResultTypeInterceptor implements Interceptor{
                 	ResultSet rs=null;
                     long totalItemCount = 0;
                     try {
-                    	mapperLogger.debug("==> TotalCount SQL: {}",countSql);
+                    	mapperLogger.debug("==> Preparing Sql: {}",countSql);
                     	
                     	//预编译统计总记录数的sql
                     	countStatement = conn.prepareStatement(countSql);
@@ -121,9 +121,8 @@ public class ResultTypeInterceptor implements Interceptor{
         				}
         		        final String parameters = typeList.toString();    
         		        if(mapperLogger.isDebugEnabled()) {
-        		        	mapperLogger.debug("==> TotalCount Parameters: {}",parameters.substring(1, parameters.length() - 1));
+        		        	mapperLogger.debug("==>    Parameters: {}",parameters.substring(1, parameters.length() - 1));
         		        }
-        				
 
                         BoundSql countBs=copyAndNewBS(ms,boundSql,countSql);
         				//当sql带有参数时，下面的这句话就是获取查询条件的参数 
@@ -134,7 +133,7 @@ public class ResultTypeInterceptor implements Interceptor{
                         rs = countStatement.executeQuery();
                         while (rs.next()) {	                    	
                         	totalItemCount = rs.getInt(1);
-                        	mapperLogger.debug("<== TotalCount Result: {}",totalItemCount);
+                        	mapperLogger.debug("<==   Total Count: {}",totalItemCount);
                         }
                     } catch (SQLException e) {
                         e.printStackTrace();
@@ -232,7 +231,6 @@ public class ResultTypeInterceptor implements Interceptor{
 								logger.debug("property:{},jdbcType:{}",variable,jdbcType);
 							}
 						}
-						
 					}
 					Object value=paramMap.get(variable);
 					if(value==null) {
@@ -263,7 +261,6 @@ public class ResultTypeInterceptor implements Interceptor{
 	    			((Map<String, Object>)parameterObject).put("config", builderConfig);//$NON-NLS-1$
 	    		}
 	    	}
-	    	
 	    }	    
 	    return invocation.proceed();
 	}
@@ -415,11 +412,11 @@ public class ResultTypeInterceptor implements Interceptor{
           builder.append(" ");
         }
         return builder.toString();
-      }
+    }
     
     protected String objectValueToString(Object value) {
-        if (value instanceof Array) {
-          try {
+		if (value instanceof Array) {
+			try {
             return ArrayUtil.toString(((Array) value).getArray()) + "(" + value.getClass().getSimpleName() + ")";
           } catch (SQLException e) {
             return value.toString();
@@ -430,7 +427,7 @@ public class ResultTypeInterceptor implements Interceptor{
 		}
         
         return value.toString()+ "(" + value.getClass().getSimpleName() + ")";
-      }
+    }
 
     @Override
     public Object plugin(Object target) {
@@ -443,6 +440,7 @@ public class ResultTypeInterceptor implements Interceptor{
 
     @Override
     public void setProperties(Properties properties) {
+    	// TODO Auto-generated constructor stub
     }
     
     /**
@@ -457,9 +455,7 @@ public class ResultTypeInterceptor implements Interceptor{
     		this.boundSql=boundSql;
     	}
 		public BoundSql getBoundSql(Object arg0) {
-			// TODO Auto-generated method stub
 			return boundSql;
 		}
-    	
     }
 }

@@ -26,4 +26,5 @@ public interface IColumnHandler {
 	 * @since 1.4.0
 	 */
 	Boolean isPrimaryKey(ColumnQueryBuilder<?> columnBuilder,BuilderConfiguration configuration);
+	
 }
