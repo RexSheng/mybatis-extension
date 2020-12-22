@@ -90,7 +90,7 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	
 	/**
 	 * 查询满足条件的字段
-	 * same as {@link TableQueryBuilder#selectField(Predicate)}}
+	 * same as {@link TableQueryBuilder#selectField(Predicate)}
 	 * @param filter 满足的条件
 	 * @return 当前条件
 	 */
@@ -137,14 +137,6 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 		}
 		return this;
 	}
-	
-//	public TableQueryBuilder<T> select(String... columnNames) {
-//		for(String columnName:columnNames) {
-//			ColumnQueryBuilder<T> columnQuery=new ColumnQueryBuilder<T>(super.getEntityClass(),null,null,columnName);
-//			this.selectColumns.add(columnQuery);
-//		}
-//		return this;
-//	}
 	
 	public TableQueryBuilder<T> selectAs(SFunction<T,Object> field,String aliasName) {
 		String fieldName=ReflectUtil.fnToFieldName(field);
@@ -617,6 +609,16 @@ public class TableQueryBuilder<T> extends EntityInfo<T>{
 	public TableQueryBuilder<T> totalCountEnabled(Boolean skipSelectIfCountZero) {
 		this.calculateTotalCount = true;
 		this.temporarySkipSelectIfCountZero=skipSelectIfCountZero;
+		return this;
+	}
+	
+	/**
+	 * 不查询总条数
+	 * @return 当前条件
+	 * @since 1.5.0
+	 */
+	public TableQueryBuilder<T> totalCountDisabled() {
+		this.calculateTotalCount = false;
 		return this;
 	}
 

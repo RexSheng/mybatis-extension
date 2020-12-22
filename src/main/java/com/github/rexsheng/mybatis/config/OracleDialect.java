@@ -32,11 +32,11 @@ public class OracleDialect extends DefaultDatabaseDialect{
 			BoundSql boundSql, MappedStatement ms, QueryBuilder<?> queryBuilder) {
 		String additionalSql=selectSql;
 		if(queryBuilder.getTable().getEndIndex()!=null) {
-			additionalSql="SELECT tt.*,ROWNUM AS _rowno FROM ("+additionalSql+") tt WHERE ROWNUM<= ? ";//$NON-NLS-1$
+			additionalSql="SELECT tt.*,ROWNUM AS extension_rowno FROM ("+additionalSql+") tt WHERE ROWNUM<= ? ";//$NON-NLS-1$
 			parameterMappingList.add(createNewParameterMapping(ms,"table.endIndex",java.lang.Integer.class));//$NON-NLS-1$							
 		}
 		if(queryBuilder.getTable().getStartIndex()!=null) {
-			additionalSql="SELECT * FROM ("+additionalSql+") t WHERE t._rowno> ?";//$NON-NLS-1$
+			additionalSql="SELECT * FROM ("+additionalSql+") t WHERE t.extension_rowno> ?";//$NON-NLS-1$
 			parameterMappingList.add(createNewParameterMapping(ms,"table.startIndex",java.lang.Integer.class));//$NON-NLS-1$
 		}
 		return additionalSql;
